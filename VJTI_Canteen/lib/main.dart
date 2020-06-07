@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './screens/auth_screen.dart';
+import './screens/splash_screen.dart';
 import './screens/home_screen.dart';
 import './providers/auth.dart';
-
 
 
 void main() {
@@ -26,7 +26,15 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: auth.isAuth ? HomeScreen() : AuthScreen(),
+        home: auth.isAuth 
+            ? HomeScreen() 
+            : FutureBuilder(
+                future: auth.tryAutoLogin(),
+                builder: (ctx, authResultSnapshot) =>
+                  authResultSnapshot.connectionState == ConnectionState.waiting
+                    ? SplashScreen()
+                    : AuthScreen()
+            )
        ),
       )
     );
