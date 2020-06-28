@@ -15,14 +15,13 @@ FooditemList foodItemList = FooditemList(foodItems: [
       id: 3,
       title: 'Fried Rice',
       price: 30,
-      
       imgloc: 'assets/FoodItems/Fried_Rice.png'),
   FoodItem(
       id: 4,
       title: 'Gobi Chilli',
       price: 30,
       imgloc: 'assets/FoodItems/Gobbi_Chilli.png'),
-      FoodItem(
+  FoodItem(
       id: 5,
       title: 'Papdi Chaat',
       price: 15,
@@ -40,12 +39,13 @@ class FoodItem {
   double price;
   int quantity;
   String imgloc;
+  int availability;
   FoodItem(
       {@required this.id,
       @required this.title,
       @required this.price,
       @required this.imgloc,
-      this.quantity = 1});
+      this.quantity = 0});
   void incrementQuantity() {
     this.quantity++;
   }
