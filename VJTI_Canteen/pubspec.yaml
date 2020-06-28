@@ -29,6 +29,8 @@ dependencies:
   provider: ^4.1.3
   shared_preferences: ^0.5.7+3
   auto_size_text: ^2.1.0
+  firebase_auth: ^0.16.1
+  cloud_firestore: ^0.13.6
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -55,6 +57,7 @@ flutter:
   assets:
     - assets/images/food_image.jpg
     - assets/FoodItems/
+    - assets/images/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

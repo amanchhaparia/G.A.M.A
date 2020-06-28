@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "144322656440",
+    "firebase_url": "https://vjti-canteen.firebaseio.com",
+    "project_id": "vjti-canteen",
+    "storage_bucket": "vjti-canteen.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144322656440:android:185b303e358cec07219c4d",
+        "android_client_info": {
+          "package_name": "com.VJTI.VJTI_Canteen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144322656440-h3uo8h1aj5ta3aicud4te6kkj2ucqdaa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjuvFvYWfQE0aAmyMV9k7F6q7DR7TGY-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144322656440-h3uo8h1aj5ta3aicud4te6kkj2ucqdaa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './screens/auth_screen.dart';
-import './screens/splash_screen.dart';
-import './screens/home_screen.dart';
-import './providers/auth.dart';
 
+import './screens/auth_screen.dart';
+import './screens/admin_login_screen.dart';
+import './screens/wrapper_screen.dart';
+import './screens/admin_home_screen.dart';
+import './providers/auth.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,26 +18,21 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
-          value: Auth()
+          value: Auth(),
         )
-      ],
-      child: Consumer<Auth>(builder:(ctx,auth,_)=>MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
+      ] ,
+      child: Consumer<Auth>(builder: (ctx,auth,_)=>
+        MaterialApp(
+          title: 'VJTI_CANTEEN',
+          routes: {
+            AuthScreen.route: (ctx) => AuthScreen(),
+            AdminLoginScreen.routeName: (ctx) => AdminLoginScreen(),
+            AdminHomeScreen.routeName: (ctx) => AdminHomeScreen(),
+          },
+          home:// AdminLoginScreen(),
+          WrapperScreen(auth: auth),
         ),
-        home: auth.isAuth 
-            ? HomeScreen() 
-            : FutureBuilder(
-                future: auth.tryAutoLogin(),
-                builder: (ctx, authResultSnapshot) =>
-                  authResultSnapshot.connectionState == ConnectionState.waiting
-                    ? SplashScreen()
-                    : AuthScreen()
-            )
-       ),
-      )
+      ),
     );
   }
 }

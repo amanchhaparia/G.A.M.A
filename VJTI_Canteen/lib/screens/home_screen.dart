@@ -248,7 +248,12 @@ class FirstHalf extends StatelessWidget {
   }
 }
 
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatefulWidget {
+  @override
+  _CustomAppBarState createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -258,7 +263,9 @@ class CustomAppBar extends StatelessWidget {
           children: <Widget>[
             Icon(Icons.menu),
             GestureDetector(
-              onTap: () {},
+              onTap: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AppDrawer()));
+              },
               child: Container(
                 margin: EdgeInsets.only(right: 30.0),
                 child: Text('0'),

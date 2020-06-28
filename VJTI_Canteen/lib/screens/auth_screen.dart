@@ -8,6 +8,7 @@ import '../models/http_exception.dart';
 enum AuthMode {Signup, Login}
 
 class AuthScreen extends StatelessWidget {
+  static const route = '/authScreen';
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -100,9 +101,13 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
     try{
       if (_authMode == AuthMode.Login) {
         // Log user in
-        await Provider.of<Auth>(context, listen: false).login(_authData['email'], _authData['password']);
+        //await Provider.of<Auth>(context, listen: false).login(_authData['email'], _authData['password']);
+        await Provider.of<Auth>(context, listen: false).signInWithEmailAndPassword(_authData['email'], _authData['password']);
+        Navigator.of(context).pop();
      } else {
-        await Provider.of<Auth>(context, listen: false).signup(_authData['email'], _authData['password']);
+        //await Provider.of<Auth>(context, listen: false).signup(_authData['email'], _authData['password']);
+        await Provider.of<Auth>(context, listen: false).registerWithEmailAndPassword(_authData['email'], _authData['password']);
+        Navigator.of(context).pop();
      }
     } on HttpException catch(error){
       var errorMessage = 'Authenticate Failed!';
@@ -111,7 +116,7 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
       else if(error.toString().contains('EMAIL_NOT_FOUND')){errorMessage= 'Could not find a user with that email.!';}
       else if(error.toString().contains('INVALID_PASSWORD')){errorMessage='Invalid Password';}
       _showDialogue(errorMessage);
-    }
+    } 
     
     setState(() {
       _isLoading = false;
