@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
           },
           home:// AdminLoginScreen(),
           WrapperScreen(auth: auth),
+          debugShowCheckedModeBanner: false,
         ),
       ),
     );

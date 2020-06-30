@@ -1,41 +1,80 @@
+import 'package:flutter/material.dart';
 import 'package:VJTI_Canteen/widgets/app_drawer.dart';
 
 import '../models/fooditem.dart';
 import '../models/Homepage_middle_part.dart';
-import 'package:flutter/material.dart';
+
 import '../bloc/cartListBloc.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import '../models/cart.dart';
 
-class HomeScreen extends StatelessWidget {
+
+var isCollapsed = ValueNotifier<bool>(true);
+
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final Duration duration = const Duration(milliseconds: 700);
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       blocs: [Bloc((i) => CartListBloc())],
-      child: MaterialApp(
-        title: 'VJTI CANTEEN',
-        home: Home(),
-        debugShowCheckedModeBanner: false,
+      child: Scaffold(
+        backgroundColor: Colors.amber[300],
+        body: ValueListenableBuilder(
+            valueListenable: isCollapsed,
+            builder: (context, value, widget) {
+              return Stack(
+                children: <Widget>[
+                  AppDrawer(),
+                  AnimatedPositioned(
+                    duration: duration,
+                    top: isCollapsed.value
+                        ? 0
+                        : MediaQuery.of(context).size.height * 0.1,
+                    bottom: isCollapsed.value
+                        ? 0
+                        : MediaQuery.of(context).size.height * 0,
+                    left: isCollapsed.value
+                        ? 0
+                        : MediaQuery.of(context).size.width * 0.5,
+                    right: isCollapsed.value
+                        ? 0
+                        : MediaQuery.of(context).size.height * -0.25,
+                    child: Material(
+                      borderRadius: BorderRadius.all(Radius.circular(40)),
+                      animationDuration: Duration(milliseconds: 700),
+                      elevation: 20.0,
+                      child: Home(context),
+                    ),
+                  ),
+                ],
+              );
+            }),
       ),
     );
   }
 }
 
+
+
 class Home extends StatelessWidget {
+  BuildContext context;
+  Home(this.context);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: AppDrawer(),
-      body: SafeArea(
-        child: Container(
-          child: ListView(
-            children: <Widget>[
-              FirstHalf(),
-              SizedBox(height: 45),
-              for (var foodItem in foodItemList.foodItems)
-                ItemContainer(foodItem: foodItem),
-            ],
-          ),
+      body: Container(
+        child: ListView(
+          children: <Widget>[
+            FirstHalf(),
+            SizedBox(height: 45),
+            for (var foodItem in foodItemList.foodItems)
+              ItemContainer(foodItem: foodItem),
+          ],
         ),
       ),
     );
@@ -127,11 +166,14 @@ class FirstHalf extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Icon(
-          Icons.search,
-          color: Colors.black45,
+        Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: Icon(
+            Icons.search,
+            color: Colors.black45,
+          ),
         ),
-        SizedBox(width: 20),
+        SizedBox(width: 10),
         Expanded(
           child: TextField(
             decoration: InputDecoration(
@@ -209,42 +251,51 @@ class FirstHalf extends StatelessWidget {
   }
 }
 
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatefulWidget {
+  @override
+  _CustomAppBarState createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
   final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
+
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 15),
-      child: Flexible(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            GestureDetector(
-              child: Icon(Icons.menu),
-            ),
-            StreamBuilder(
-              initialData: null,
-              stream: bloc.listStream,
-              builder: (context, snapshot) {
-                List<FoodItem> foodItems = [];
-                if (snapshot.hasData) {
-                  foodItems = snapshot.data;
-                }
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          InkWell(
+            child: Icon(Icons.menu),
+            onTap: () {
+              setState(() {
+                isCollapsed.value = !isCollapsed.value;
+              });
+            },
+          ),
+          StreamBuilder(
+            initialData: null,
+            stream: bloc.listStream,
+            builder: (context, snapshot) {
+              List<FoodItem> foodItems = [];
+              if (snapshot.hasData) {
+                foodItems = snapshot.data;
+              }
 
-                int sum = 0;
+              int sum = 0;
 
-                for (int i = 0; i < foodItems.length; i++) {
-                  sum = sum + foodItems[i].quantity;
-                }
-                return buildGestureDetector(
-                  sum,
-                  context,
-                  foodItems,
-                );
-              },
-            )
-          ],
-        ),
+              for (int i = 0; i < foodItems.length; i++) {
+                sum = sum + foodItems[i].quantity;
+              }
+              return buildGestureDetector(
+                sum,
+                context,
+                foodItems,
+              );
+            },
+          )
+        ],
       ),
     );
   }
@@ -253,30 +304,43 @@ class CustomAppBar extends StatelessWidget {
       int sum, BuildContext context, List<FoodItem> foodItems) {
     return GestureDetector(
       onTap: () {
-        if (sum > 0) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Cart(),
-            ),
-          );
-        } else {
-          return;
-        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Cart(),
+          ),
+        );
       },
       child: Container(
-        margin: EdgeInsets.only(right: 30.0),
-        child: sum == 0
-            ? Text(
-                '0',
-              )
-            : Text(
-                sum.toString(),
+        width: MediaQuery.of(context).size.width * 0.2,
+        height: MediaQuery.of(context).size.height * 0.1,
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              right: MediaQuery.of(context).size.width * 0.02,
+              top: MediaQuery.of(context).size.height * 0.01,
+              child: CircleAvatar(
+                backgroundColor: Colors.yellow[800],
+                child: sum == 0
+                    ? Text(
+                        '0',
+                        style: TextStyle(color: Colors.black),
+                      )
+                    : Text(
+                        sum.toString(),
+                        style: TextStyle(color: Colors.black),
+                      ),
               ),
-        padding: EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: Colors.yellow[800],
-          borderRadius: BorderRadius.circular(50.0),
+            ),
+            Positioned(
+              right: MediaQuery.of(context).size.width * 0.06,
+              top: MediaQuery.of(context).size.width * 0.08,
+              child: Icon(
+                Icons.shopping_cart,
+                size: 30,
+              ),
+            ),
+          ],
         ),
       ),
     );
