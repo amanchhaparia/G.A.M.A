@@ -6,35 +6,63 @@ import '../providers/auth.dart';
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      drawer: Drawer(
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 16.0,
+      ),
+      child: Align(
+        alignment: Alignment.centerLeft,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            AppBar(
-              title:Text('Customer name'),
-              automaticallyImplyLeading: false,
+            SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+            CircleAvatar(
+              backgroundColor: Colors.blueGrey,
+              radius: MediaQuery.of(context).size.width * 0.2,
+                          child: CircleAvatar(
+                radius: MediaQuery.of(context).size.width * 0.17,
+                backgroundImage: NetworkImage(
+                    'https://thumbs.gfycat.com/ConsiderateFlamboyantHawaiianmonkseal-size_restricted.gif'),
+              ),
             ),
-            Divider(),
-            ListTile(
-              leading: Icon(Icons.receipt),
-              title: Text('Your Orders'),
-              onTap: (){},
+            Container(
+              padding: EdgeInsets.only(top: 15),
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'Customer Mail',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ),
+            Divider(
+              color: Colors.white,
+            ),
+            menuMaker(context, iconname: Icons.fastfood, text: 'Your Orders'),
+            Divider(
+              color: Colors.white,
+            ),
+            menuMaker(context,
+                iconname: Icons.account_balance_wallet, text: 'Your Wallet'),
+            Divider(
+              color: Colors.white,
+            ),
+            menuMaker(context, iconname: Icons.settings, text: 'Settings'),
+            Divider(
+              color: Colors.white,
             ),
             ListTile(
-              leading: Icon(Icons.payment),
-              title: Text('Payment Options'),
-              onTap: (){},
-            ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
-              onTap: (){},
-            ),
-            ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text('Logout'),
-              onTap: (){
+              leading: Icon(
+                Icons.exit_to_app,
+                color: Colors.grey,
+              ),
+              title: Text(
+                'Logout',
+                style: TextStyle(color: Colors.black),
+              ),
+              onTap: () {
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
@@ -43,26 +71,49 @@ class AppDrawer extends StatelessWidget {
                     actions: <Widget>[
                       FlatButton(
                         child: Text('No'),
-                        onPressed: (){
+                        onPressed: () {
                           Navigator.of(ctx).pop();
                         },
                       ),
                       FlatButton(
                         child: Text('Yes'),
-                        onPressed: (){
+                        onPressed: () {
                           Navigator.of(ctx).pop();
                           Navigator.of(ctx).pushReplacementNamed('/');
-                          Provider.of<Auth>(ctx,listen:false).signOut();
+                          Provider.of<Auth>(ctx, listen: false).signOut();
                         },
                       ),
-                  ],), 
+                    ],
+                  ),
                 );
               },
             ),
           ],
         ),
       ),
-      body: Container(),
     );
   }
+}
+
+Widget menuMaker(BuildContext context, {IconData iconname, String text}) {
+  return Container(
+    width: MediaQuery.of(context).size.width * 0.4,
+    child: Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Icon(
+            iconname,
+            size: MediaQuery.of(context).size.width *0.16,
+            color: Colors.blueGrey,
+            
+          ),
+        ),
+        Text(
+          text,
+          style: TextStyle(fontSize: 20, color: Colors.redAccent,fontWeight: FontWeight.bold),
+        )
+      ],
+    ),
+  );
 }

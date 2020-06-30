@@ -135,7 +135,7 @@ class CartBody extends StatelessWidget {
   Container noItemContainer() {
     return Container(
       child: Center(
-        child: Text("No More Items Left In The Cart",
+        child: Text("Your Cart Is Empty",
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: Colors.grey[500],
@@ -196,7 +196,7 @@ class CustomAppBar extends StatelessWidget {
                 size: 30,
               ),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.of(context).pop();
               }),
         ),
         DragTargetWidget(),

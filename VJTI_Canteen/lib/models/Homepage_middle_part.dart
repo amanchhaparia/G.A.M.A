@@ -207,7 +207,7 @@ class _IncrementDecrementState extends State<IncrementDecrement> {
                             '${widget.itemName} is added to the cart',
                             style: TextStyle(color: Colors.amber, fontSize: 20),
                           ),
-                          duration: Duration(milliseconds: 100),
+                          duration: Duration(milliseconds: 300),
                         );
                         Scaffold.of(context).showSnackBar(snackBar);
                       },

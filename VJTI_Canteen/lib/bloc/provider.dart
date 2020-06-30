@@ -20,9 +20,11 @@ class CartProvider {
 
       if (!isPresent) {
         foodItems.add(foodItem);
+        increaseItemQuantity(foodItem);
       }
     } else {
       foodItems.add(foodItem);
+      increaseItemQuantity(foodItem);
     }
 
     return foodItems;
@@ -30,14 +32,11 @@ class CartProvider {
 
   List<FoodItem> removeFromList(FoodItem foodItem) {
     if (foodItem.quantity > 1) {
-      
       decreaseItemQuantity(foodItem);
-    }else if(foodItem.quantity==1){
-      foodItem.quantity=0;
+    } else if (foodItem.quantity == 1) {
+      foodItem.quantity = 0;
       foodItems.remove(foodItem);
-    } 
-    else {
-      
+    } else {
       foodItems.remove(foodItem);
     }
     return foodItems;
