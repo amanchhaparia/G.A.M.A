@@ -1,6 +1,7 @@
 //import 'dart:convert';
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 //import 'package:http/http.dart' as http;
 //import 'package:shared_preferences/shared_preferences.dart';
@@ -8,12 +9,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 //import '../models/http_exception.dart';
 
-class User{
+class User {
   final uid;
   User({@required this.uid});
 }
 
-class Auth with ChangeNotifier{
+class Auth with ChangeNotifier {
   // String _token;
   // DateTime _expiryDate;
   // String _userId;
@@ -63,7 +64,7 @@ class Auth with ChangeNotifier{
   //  } catch(error){
   //     throw error;
   //  }
-  // } 
+  // }
 
   // Future <void> signup(String email, String password) async{
   //   return _authenicate(email, password, 'signUp');
@@ -80,7 +81,7 @@ class Auth with ChangeNotifier{
   //   }
   //   final extractedUserData = json.decode(prefs.getString('userData')) as Map<String,Object>;
   //   final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
-    
+
   //   if(expiryDate.isBefore(DateTime.now())){
   //     return false;
   //   }
@@ -104,7 +105,7 @@ class Auth with ChangeNotifier{
   //   }
   //   notifyListeners();
   //   final prefs = await SharedPreferences.getInstance();
-  //   prefs.clear(); 
+  //   prefs.clear();
   // }
 
   // void _autoLogout(){
@@ -113,39 +114,54 @@ class Auth with ChangeNotifier{
   //   }
   //   final timeToExpiry =_expiryDate.difference(DateTime.now()).inSeconds;
   //   _authTimer =Timer(Duration(seconds: timeToExpiry), logout);
-  // } 
+  // }
 
   //using firebase auth
 
-  User _userfromFirebase(FirebaseUser user){
-    if(user == null){return null;}
+  User _userfromFirebase(FirebaseUser user) {
+    if (user == null) {
+      return null;
+    }
     return User(uid: user.uid);
   }
 
-  Stream <User> get onAuthStateChanged {
+  Stream<User> get onAuthStateChanged {
     return FirebaseAuth.instance.onAuthStateChanged.map(_userfromFirebase);
   }
 
-  Future <void> registerWithEmailAndPassword(String email, String password) async {
-    try{
-       await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-    }catch(e){throw e;}
+  Future<void> registerWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      final response = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      Firestore.instance
+          .collection('Users')
+          .document(response.user.uid)
+          .setData({'balance': 0});
+    } catch (e) {
+      throw e;
+    }
   }
 
-  Future<void> signInWithEmailAndPassword(String email, String password) async{
-    try{
-      final result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+  Future<void> signInWithEmailAndPassword(String email, String password) async {
+    try {
+      final result = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
       return _userfromFirebase(result.user);
-    }catch(e){throw e;}
+    } catch (e) {
+      throw e;
+    }
   }
 
-  Future <void> signOut() async {
+  Future<void> signOut() async {
     try {
       await FirebaseAuth.instance.signOut();
-    }catch(e){throw e;}
-  }  
+    } catch (e) {
+      throw e;
+    }
+  }
 
-  Future <User> currentUser() async {
+  Future<User> currentUser() async {
     final user = await FirebaseAuth.instance.currentUser();
     return _userfromFirebase(user);
   }

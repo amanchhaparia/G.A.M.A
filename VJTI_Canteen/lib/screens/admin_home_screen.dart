@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class AdminHomeScreen extends StatelessWidget {
   static const routeName = '/adminHomeScreen';
   @override
@@ -8,7 +7,7 @@ class AdminHomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: Container(
-        
+        child: Text('hello'),
       ),
     );
   }
