@@ -11,6 +11,7 @@ import '../models/Homepage_middle_part.dart';
 import '../bloc/cartListBloc.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import '../models/cart.dart';
+import '../bloc/listTileColorBloc.dart';
 
 var isCollapsed = ValueNotifier<bool>(true);
 
@@ -24,7 +25,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      blocs: [Bloc((i) => CartListBloc())],
+      blocs: [
+        Bloc((i) => CartListBloc()),
+        Bloc((i) => ColorBloc()),
+      ],
       child: Scaffold(
         backgroundColor: Colors.amber[300],
         body: ValueListenableBuilder(
