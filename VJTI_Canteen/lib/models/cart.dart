@@ -3,9 +3,11 @@ import '../bloc/cartListBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
+import '../bloc/listTileColorBloc.dart';
 
 class Cart extends StatelessWidget {
   final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
+  final ColorBloc colorBloc = BlocProvider.getBloc<ColorBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,7 @@ class Cart extends StatelessWidget {
     return StreamBuilder(
       stream: bloc.listStream,
       builder: (context, snapshot) {
-        if (snapshot.data != null) {
+        if (snapshot.hasData) {
           foodItems = snapshot.data;
           return Scaffold(
             body: SafeArea(
@@ -212,14 +214,21 @@ class DragTargetWidget extends StatefulWidget {
 
 class _DragTargetWidgetState extends State<DragTargetWidget> {
   final CartListBloc listBloc = BlocProvider.getBloc<CartListBloc>();
+  final ColorBloc colorBloc = BlocProvider.getBloc<ColorBloc>();
   @override
   Widget build(BuildContext context) {
+     
     return DragTarget<FoodItem>(
       onWillAccept: (FoodItem foodItem) {
+         colorBloc.setColor(Colors.red);
         return true;
       },
       onAccept: (FoodItem foodItem) {
         listBloc.removeFromList(foodItem);
+        colorBloc.setColor(Colors.white);
+      },
+       onLeave: (_) {
+        colorBloc.setColor(Colors.white);
       },
       builder: (context, incoming, rejected) {
         return Padding(
@@ -281,14 +290,23 @@ class DraggableChildFeedback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorBloc colorBloc = BlocProvider.getBloc<ColorBloc>();
     return Opacity(
       opacity: 0.7,
-      child: Material(
-        child: Container(
-          margin: EdgeInsets.only(bottom: 25),
-          child: ItemContent(foodItem),
-        ),
-      ),
+      child: StreamBuilder<Object>(
+          stream: colorBloc.colorStream,
+          builder: (context, snapshot) {
+            return Material(
+              child: Container(
+                 decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: snapshot.hasData ? snapshot.data : Colors.white,
+              ),
+                margin: EdgeInsets.only(bottom: 25),
+                child: ItemContent(foodItem),
+              ),
+            );
+          }),
     );
   }
 }
