@@ -1,5 +1,9 @@
+// import 'dart:html';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:VJTI_Canteen/widgets/app_drawer.dart';
+// import 'package:provider/provider.dart';
 
 import '../models/fooditem.dart';
 import '../models/Homepage_middle_part.dart';
@@ -7,7 +11,6 @@ import '../models/Homepage_middle_part.dart';
 import '../bloc/cartListBloc.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import '../models/cart.dart';
-
 
 var isCollapsed = ValueNotifier<bool>(true);
 
@@ -59,8 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-
-
 class Home extends StatelessWidget {
   BuildContext context;
   Home(this.context);
@@ -68,12 +69,34 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: ListView(
+        child: Column(
           children: <Widget>[
             FirstHalf(),
             SizedBox(height: 45),
-            for (var foodItem in foodItemList.foodItems)
-              ItemContainer(foodItem: foodItem),
+            StreamBuilder(
+              stream: Firestore.instance.collection('FoodItem').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.active) {
+                  print('yes');
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (context, index) => ItemContainer(
+                          foodItem: FoodItem(
+                        id: snapshot.data.documents[index]['id'],
+                        title: snapshot.data.documents[index]['name'],
+                        imgloc: 'assets/FoodItems/Bread_Pakoda.png',
+                        price: (snapshot.data.documents[index]['price'])
+                            .toDouble(),
+                      )),
+                    ),
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            )
           ],
         ),
       ),
