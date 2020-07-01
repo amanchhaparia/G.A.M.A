@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
+import '../screens/wallet_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -44,8 +45,15 @@ class AppDrawer extends StatelessWidget {
             Divider(
               color: Colors.white,
             ),
-            menuMaker(context,
-                iconname: Icons.account_balance_wallet, text: 'Your Wallet'),
+            InkWell(
+              onTap: (){
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (BuildContext context)=>WalletScreen(),)
+                );
+              },
+                          child: menuMaker(context,
+                  iconname: Icons.account_balance_wallet, text: 'Your Wallet'),
+            ),
             Divider(
               color: Colors.white,
             ),
