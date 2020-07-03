@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
+import '../screens/orders_screen.dart';
 import '../screens/wallet_screen.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -21,7 +22,7 @@ class AppDrawer extends StatelessWidget {
             CircleAvatar(
               backgroundColor: Colors.blueGrey,
               radius: MediaQuery.of(context).size.width * 0.2,
-                          child: CircleAvatar(
+              child: CircleAvatar(
                 radius: MediaQuery.of(context).size.width * 0.17,
                 backgroundImage: NetworkImage(
                     'https://thumbs.gfycat.com/ConsiderateFlamboyantHawaiianmonkseal-size_restricted.gif'),
@@ -41,17 +42,22 @@ class AppDrawer extends StatelessWidget {
             Divider(
               color: Colors.white,
             ),
-            menuMaker(context, iconname: Icons.fastfood, text: 'Your Orders'),
+            GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, OrderScreen.routeName);
+                },
+                child: menuMaker(context,
+                    iconname: Icons.fastfood, text: 'Your Orders')),
             Divider(
               color: Colors.white,
             ),
             InkWell(
-              onTap: (){
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (BuildContext context)=>WalletScreen(),)
-                );
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => WalletScreen(),
+                ));
               },
-                          child: menuMaker(context,
+              child: menuMaker(context,
                   iconname: Icons.account_balance_wallet, text: 'Your Wallet'),
             ),
             Divider(
@@ -112,14 +118,16 @@ Widget menuMaker(BuildContext context, {IconData iconname, String text}) {
           padding: const EdgeInsets.all(12.0),
           child: Icon(
             iconname,
-            size: MediaQuery.of(context).size.width *0.16,
+            size: MediaQuery.of(context).size.width * 0.16,
             color: Colors.blueGrey,
-            
           ),
         ),
         Text(
           text,
-          style: TextStyle(fontSize: 20, color: Colors.redAccent,fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontSize: 20,
+              color: Colors.redAccent,
+              fontWeight: FontWeight.bold),
         )
       ],
     ),

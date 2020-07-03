@@ -86,13 +86,14 @@ class Home extends StatelessWidget {
                     child: ListView.builder(
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (context, index) => ItemContainer(
-                          foodItem: FoodItem(
-                        id: snapshot.data.documents[index]['id'],
-                        title: snapshot.data.documents[index]['name'],
-                        imgloc: 'assets/FoodItems/Bread_Pakoda.png',
-                        price: (snapshot.data.documents[index]['price'])
-                            .toDouble(),
-                      )),
+                        foodItem: FoodItem(
+                          id: snapshot.data.documents[index]['id'],
+                          title: snapshot.data.documents[index]['name'],
+                          imgloc: 'assets/FoodItems/Bread_Pakoda.png',
+                          price: (snapshot.data.documents[index]['price'])
+                              .toDouble(),
+                        ),
+                      ),
                     ),
                   );
                 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 import './screens/auth_screen.dart';
 import './screens/admin_login_screen.dart';
 import './screens/wrapper_screen.dart';
 import './screens/admin_home_screen.dart';
+import './screens/orders_screen.dart';
 import './providers/auth.dart';
 
 void main() {
@@ -20,17 +20,18 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: Auth(),
         )
-      ] ,
-      child: Consumer<Auth>(builder: (ctx,auth,_)=>
-        MaterialApp(
+      ],
+      child: Consumer<Auth>(
+        builder: (ctx, auth, _) => MaterialApp(
           title: 'VJTI_CANTEEN',
           routes: {
             AuthScreen.route: (ctx) => AuthScreen(),
             AdminLoginScreen.routeName: (ctx) => AdminLoginScreen(),
             AdminHomeScreen.routeName: (ctx) => AdminHomeScreen(),
+            OrderScreen.routeName: (ctx) => OrderScreen(),
           },
-          home:// AdminLoginScreen(),
-          WrapperScreen(auth: auth),
+          home: // AdminLoginScreen(),
+              WrapperScreen(auth: auth),
           debugShowCheckedModeBanner: false,
         ),
       ),

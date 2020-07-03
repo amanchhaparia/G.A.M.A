@@ -1,3 +1,4 @@
+import 'package:VJTI_Canteen/screens/orders_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -66,9 +67,7 @@ class WalletScreen extends StatelessWidget {
                   topLeft: Radius.circular(75.0),
                 ),
               ),
-              child: Center(
-                child: Text('List of transacitons'),
-              ),
+              child: OrderScreen(),
             )
           ],
         ),

@@ -2,8 +2,11 @@ import '../models/fooditem.dart';
 import '../bloc/cartListBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import '../bloc/listTileColorBloc.dart';
+import '../providers/auth.dart';
+import '../providers/order.dart';
 
 class Cart extends StatelessWidget {
   final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
@@ -38,6 +41,12 @@ class BottomBar extends StatelessWidget {
   BottomBar(this.foodItems);
   @override
   Widget build(BuildContext context) {
+    funct() async {
+      final user =
+          await Provider.of<Auth>(context, listen: false).currentUser();
+      return user.uid;
+    }
+
     return Container(
       margin: EdgeInsets.only(left: 35, bottom: 25),
       child: Column(
@@ -51,7 +60,14 @@ class BottomBar extends StatelessWidget {
           Container(
             height: 20,
           ),
-          nextButtonBar(),
+          GestureDetector(
+              onTap: () async {
+                var uid;
+                await funct().then((value) => (uid = value));
+                await Orders(uid)
+                    .updateUserOrder(foodItems, returnTotalAmount(foodItems));
+              },
+              child: nextButtonBar()),
         ],
       ),
     );
@@ -98,7 +114,7 @@ Container totalAmount(List<FoodItem> foodItems) {
           style: TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
         ),
         Text(
-          '₹${returnTotalAmount(foodItems)}',
+          '₹${returnTotalAmount(foodItems).toStringAsFixed(2)}',
           style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
         ),
       ],
@@ -106,12 +122,12 @@ Container totalAmount(List<FoodItem> foodItems) {
   );
 }
 
-String returnTotalAmount(List<FoodItem> foodItems) {
+double returnTotalAmount(List<FoodItem> foodItems) {
   double totalAmount = 0;
   for (int i = 0; i < foodItems.length; i++) {
     totalAmount = totalAmount + foodItems[i].price * foodItems[i].quantity;
   }
-  return totalAmount.toStringAsFixed(2);
+  return totalAmount;
 }
 
 class CartBody extends StatelessWidget {
@@ -217,17 +233,16 @@ class _DragTargetWidgetState extends State<DragTargetWidget> {
   final ColorBloc colorBloc = BlocProvider.getBloc<ColorBloc>();
   @override
   Widget build(BuildContext context) {
-     
     return DragTarget<FoodItem>(
       onWillAccept: (FoodItem foodItem) {
-         colorBloc.setColor(Colors.red);
+        colorBloc.setColor(Colors.red);
         return true;
       },
       onAccept: (FoodItem foodItem) {
         listBloc.removeFromList(foodItem);
         colorBloc.setColor(Colors.white);
       },
-       onLeave: (_) {
+      onLeave: (_) {
         colorBloc.setColor(Colors.white);
       },
       builder: (context, incoming, rejected) {
@@ -298,10 +313,10 @@ class DraggableChildFeedback extends StatelessWidget {
           builder: (context, snapshot) {
             return Material(
               child: Container(
-                 decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: snapshot.hasData ? snapshot.data : Colors.white,
-              ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: snapshot.hasData ? snapshot.data : Colors.white,
+                ),
                 margin: EdgeInsets.only(bottom: 25),
                 child: ItemContent(foodItem),
               ),

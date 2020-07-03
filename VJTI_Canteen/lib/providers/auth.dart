@@ -10,11 +10,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 //import '../models/http_exception.dart';
 
 class User {
-  final uid;
+  final String uid;
   User({@required this.uid});
+
+  String get uID {
+    return uid;
+  }
 }
 
 class Auth with ChangeNotifier {
+  dynamic userId;
   // String _token;
   // DateTime _expiryDate;
   // String _userId;
@@ -163,6 +168,7 @@ class Auth with ChangeNotifier {
 
   Future<User> currentUser() async {
     final user = await FirebaseAuth.instance.currentUser();
+    userId = user.uid;
     return _userfromFirebase(user);
   }
 }
