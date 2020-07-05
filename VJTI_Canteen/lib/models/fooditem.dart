@@ -32,17 +32,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FooditemList {
   List<FoodItem> foodItems = [];
 
-  Future<void> fetchFoodItems() async {
+  Future<List<FoodItem>> fetchFoodItems() async {
     Firestore.instance.collection('FoodItem').snapshots().listen((data) {
       data.documents.forEach((element) {
         foodItems.add(FoodItem(
             id: element['id'],
             title: element['name'],
             price: element['price'],
-            imgloc: null,
+            imgloc: 'assets/FoodItems/Papdi_Chart.png',
             quantity: element['availability']));
       });
     });
+    return foodItems;
   }
 }
 

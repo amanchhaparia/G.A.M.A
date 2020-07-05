@@ -1,9 +1,7 @@
-// import 'dart:html';
-
+import 'package:VJTI_Canteen/screens/search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:VJTI_Canteen/widgets/app_drawer.dart';
-// import 'package:provider/provider.dart';
 
 import '../models/fooditem.dart';
 import '../models/Homepage_middle_part.dart';
@@ -73,7 +71,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: Column(
+        child: ListView(
           children: <Widget>[
             FirstHalf(),
             SizedBox(height: 45),
@@ -82,26 +80,29 @@ class Home extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.active) {
                   print('yes');
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: snapshot.data.documents.length,
-                      itemBuilder: (context, index) => ItemContainer(
-                        foodItem: FoodItem(
-                          id: snapshot.data.documents[index]['id'],
-                          title: snapshot.data.documents[index]['name'],
-                          imgloc: 'assets/FoodItems/Bread_Pakoda.png',
-                          price: (snapshot.data.documents[index]['price'])
-                              .toDouble(),
-                        ),
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (context, index) => ItemContainer(
+                      foodItem: FoodItem(
+                        id: snapshot.data.documents[index]['id'],
+                        title: snapshot.data.documents[index]['name'],
+                        imgloc: 'assets/FoodItems/Bread_Pakoda.png',
+                        price: (snapshot.data.documents[index]['price'])
+                            .toDouble(),
+                        availability: snapshot.data.documents[index]
+                            ['availability'],
                       ),
                     ),
                   );
                 }
+
                 return Center(
                   child: CircularProgressIndicator(),
                 );
               },
-            )
+            ),
           ],
         ),
       ),
@@ -121,6 +122,7 @@ class ItemContainer extends StatelessWidget {
         itemPrice: foodItem.price,
         imgloc: foodItem.imgloc,
         foodItem: foodItem,
+        availability: foodItem.availability,
       ),
     );
   }
@@ -132,11 +134,13 @@ class Items extends StatelessWidget {
     @required this.itemName,
     @required this.itemPrice,
     @required this.foodItem,
+    @required this.availability,
   });
 
   final String imgloc;
   final String itemName;
   final double itemPrice;
+  final int availability;
   final FoodItem foodItem;
 
   @override
@@ -144,7 +148,8 @@ class Items extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height * 0.4,
       width: double.infinity,
-      child: HomePageMiddlePart(imgloc, itemName, itemPrice, foodItem),
+      child: HomePageMiddlePart(
+          imgloc, itemName, itemPrice, foodItem, availability),
     );
   }
 }
@@ -185,37 +190,54 @@ class FirstHalf extends StatelessWidget {
           ]),
         ),
         SizedBox(height: 10.0),
-        searchBar(),
+        InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => Search(),
+                ),
+              );
+            },
+            child: Container(
+              margin: EdgeInsets.all(10.0),
+              padding: EdgeInsets.all(15.0),
+              height: 50.0,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(40.0),
+              ),
+              child: Align(
+                  alignment: Alignment.bottomLeft, child: Icon(Icons.search)),
+            )),
       ],
     );
   }
 
-  Widget searchBar() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 20.0),
-          child: Icon(
-            Icons.search,
-            color: Colors.black45,
-          ),
-        ),
-        SizedBox(width: 10),
-        Expanded(
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Search',
-              contentPadding: EdgeInsets.symmetric(vertical: 10),
-              hintStyle: TextStyle(
-                color: Colors.black87,
-              ),
-            ),
-          ),
-        )
-      ],
-    );
-  }
+  // Widget searchBar() {
+  //   return Material(
+  //     elevation: 5.0,
+  //     borderRadius: BorderRadius.circular(30.0),
+  //     child: Container(
+  //       child: TextField(
+  //         decoration: InputDecoration(
+  //           contentPadding:
+  //               EdgeInsets.symmetric(horizontal: 32, vertical: 14.0),
+  //           hintText: ' Search any food',
+  //           suffixIcon: Material(
+  //             borderRadius: BorderRadius.circular(20.0),
+  //             child: Icon(
+  //               Icons.search,
+  //               color: Colors.black,
+  //             ),
+  //             elevation: 5.0,
+  //           ),
+  //           border: InputBorder.none,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget title() {
     return Row(

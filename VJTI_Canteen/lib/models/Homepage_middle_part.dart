@@ -10,7 +10,9 @@ class HomePageMiddlePart extends StatelessWidget {
   String itemName;
   double itemPrice;
   FoodItem foodItem;
-  HomePageMiddlePart(this.imgloc, this.itemName, this.itemPrice, this.foodItem);
+  int availability;
+  HomePageMiddlePart(this.imgloc, this.itemName, this.itemPrice, this.foodItem,
+      this.availability);
 
   final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
 
@@ -112,6 +114,7 @@ class IncrementDecrement extends StatefulWidget {
   String itemName;
   double itemPrice;
   FoodItem foodItem;
+
   IncrementDecrement(this.itemName, this.itemPrice, this.foodItem);
   final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
   @override
@@ -130,99 +133,46 @@ class _IncrementDecrementState extends State<IncrementDecrement> {
       bloc.removeFromList(foodItem);
     }
 
-    return widget.foodItem.quantity == 0
-        ? Positioned(
-            right: MediaQuery.of(context).size.width * 0.1,
-            top: MediaQuery.of(context).size.height * 0.15,
-            child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300], width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                height: 45,
-                width: 120,
-                child: FlatButton(
-                  color: Colors.amber,
-                  child: Text('Add'),
-                  onPressed: () {
-                    setState(() {
-                      addToCart(widget.foodItem);
-                    });
-                  },
-                )),
-          )
-        : Positioned(
-            right: MediaQuery.of(context).size.width * 0.04,
-            top: MediaQuery.of(context).size.height * 0.15,
-            child: Container(
-              margin: EdgeInsets.only(right: 25),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300], width: 2),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: EdgeInsets.symmetric(vertical: 5),
-              width: 120,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: FlatButton(
-                      color: Colors.amber,
-                      padding: EdgeInsets.all(0),
-                      onPressed: () {
-                        setState(() {
-                          removeFromCart(widget.foodItem);
-                        });
-                      },
-                      child: Container(
-                        child: Text(
-                          "-",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
+    return Positioned(
+      right: MediaQuery.of(context).size.width * 0.1,
+      top: MediaQuery.of(context).size.height * 0.15,
+      child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300], width: 2),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          height: 45,
+          width: 120,
+          child: FlatButton(
+            color: Colors.amber,
+            child: Text('Add'),
+            onPressed: () {
+              setState(() {
+                if (widget.foodItem.availability > widget.foodItem.quantity) {
+                  addToCart(widget.foodItem);
+                  final snackBar = SnackBar(
+                    content: Text(
+                      '${widget.itemName} is added to the cart',
+                      style: TextStyle(color: Colors.amber, fontSize: 20),
                     ),
-                  ),
-                  Text(
-                    widget.foodItem.quantity.toString(),
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-                  ),
-                  SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: FlatButton(
-                      color: Colors.amber,
-                      padding: EdgeInsets.all(0),
-                      onPressed: () {
-                        setState(() {
-                          addToCart(widget.foodItem);
-                        });
-
-                        final snackBar = SnackBar(
-                          content: Text(
-                            '${widget.itemName} is added to the cart',
-                            style: TextStyle(color: Colors.amber, fontSize: 20),
-                          ),
-                          duration: Duration(milliseconds: 300),
-                        );
-                        Scaffold.of(context).showSnackBar(snackBar);
-                      },
-                      child: Text(
-                        "+",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20,
-                        ),
+                    duration: Duration(milliseconds: 300),
+                  );
+                  Scaffold.of(context).showSnackBar(snackBar);
+                } else {
+                  setState(() {
+                    final snackBar = SnackBar(
+                      content: Text(
+                        'Sorry Only ${widget.foodItem.availability} units of ${widget.itemName} is available',
+                        style: TextStyle(color: Colors.amber, fontSize: 20),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
+                      duration: Duration(milliseconds: 3000),
+                    );
+                    Scaffold.of(context).showSnackBar(snackBar);
+                  });
+                }
+              });
+            },
+          )),
+    );
   }
 }

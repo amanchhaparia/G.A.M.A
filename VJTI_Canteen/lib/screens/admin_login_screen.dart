@@ -118,6 +118,7 @@ class _FormWidgetState extends State<FormWidget> {
                 ]
               ),
               child: TextFormField(
+                
                 decoration: InputDecoration(
                   icon: Icon(Icons.person),
                   hintText: 'Username',
@@ -147,6 +148,7 @@ class _FormWidgetState extends State<FormWidget> {
                 ],
               ),
               child: TextFormField(
+                obscureText: true,
                 decoration: InputDecoration(
                   icon: Icon(Icons.lock),
                   hintText: 'Password',

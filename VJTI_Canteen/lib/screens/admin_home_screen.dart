@@ -1,3 +1,4 @@
+import 'package:VJTI_Canteen/screens/admin_login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -5,27 +6,70 @@ class AdminHomeScreen extends StatelessWidget {
   static const routeName = '/adminHomeScreen';
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('ORDERS'),
-        ),
-        body: StreamBuilder(
-          stream: Firestore.instance.collection('Users').snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.active) {
-              return ListView.builder(
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index) {
-                  return UserContainer(snapshot.data.documents[index]);
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.yellow,
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => AdminLoginScreen(),
+                  ));
                 },
+                child: Container(
+                  margin: EdgeInsets.only(top: 20.0, left: 20.0),
+                  child: Icon(
+                    Icons.arrow_back,
+                    size: 30,
+                  ),
+                ),
+              ),
+              SizedBox(height: 30),
+              Container(
+                padding: EdgeInsets.only(left: 20),
+                child: Text(
+                  'Orders',
+                  style: TextStyle(fontSize: 40),
+                ),
+              ),
+              SizedBox(height: 20.0),
+              OrderList(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class OrderList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: Firestore.instance.collection('Users').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: <Widget>[
+                  UserContainer(snapshot.data.documents[index]),
+                ],
               );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
-        ));
+            },
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
   }
 }
 
@@ -39,6 +83,7 @@ class UserContainer extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           return ListView.builder(
+            scrollDirection: Axis.vertical,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemCount: snapshot.data.documents.length,
@@ -47,10 +92,7 @@ class UserContainer extends StatelessWidget {
             },
           );
         } else {
-          return Container(
-            height: 0,
-            width: 0,
-          );
+          return Container();
         }
       },
     );
@@ -59,15 +101,52 @@ class UserContainer extends StatelessWidget {
 
 class OrderItems extends StatelessWidget {
   final DocumentSnapshot document;
+
   OrderItems(this.document);
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      shadowColor: Colors.red,
+      elevation: 10.0,
+      margin: EdgeInsets.all(10),
       child: Column(
         children: <Widget>[
+          ListView.builder(
+              shrinkWrap: true,
+              physics: ScrollPhysics(),
+              itemBuilder: (context, index) {
+                return Container(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Text(
+                              document.data['items'][index]['title'],
+                              style: TextStyle(
+                                fontSize: 30.0,
+                              ),
+                            ),
+                            Text(
+                              'x${document.data['items'][index]['quantity']}',
+                              style: TextStyle(fontSize: 30.0),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              itemCount: document.data['items'].length),
           ListTile(
             title: Text(
-              'Total: Rs ${document.data['amount']}',
+              'Total:₹${document.data['amount']}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
