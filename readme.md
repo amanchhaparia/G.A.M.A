@@ -22,6 +22,16 @@ Our aim of the project is to promote more "digital payments" and "Save Paper", w
 3. Database:- Firestore
 
 ## Project Setup
+### Prerequisites
+Install flutter framework : https://flutter.dev/docs/get-started/install
+
+### Installation
+Clone the project
+```
+https://github.com/.git
+
+cd Air-Mouse
+```
 
 ## Usage
 
