@@ -28,9 +28,8 @@ Install flutter framework : https://flutter.dev/docs/get-started/install
 ### Installation
 Clone the project
 ```
-https://github.com/.git
+https://github.com/amanchhaparia/G.A.M.A.git
 
-cd Air-Mouse
 ```
 
 ## Usage
