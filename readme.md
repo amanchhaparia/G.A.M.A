@@ -28,12 +28,23 @@ Install flutter framework : https://flutter.dev/docs/get-started/install
 ### Installation
 Clone the project
 ```
-https://github.com/amanchhaparia/G.A.M.A.git
+git clone https://github.com/amanchhaparia/G.A.M.A.git
 
 ```
 
 ## Usage
+To start debugging, run the command
+```
 
+flutter run
+
+```
+
+To build apk, run the command 
+```
+flutter build apk
+
+```
 ## Applications
 * With the help of the app we can promote "Digital Payments" & "Save Papers".
 * One can avoid long queues in the canteen and Saves time.
