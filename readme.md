@@ -11,6 +11,7 @@
 * Yogesh
 
 ## Description
+VJTI Canteen is a mobile Application to facilitate the daily activities of the canteen and making it more consumer friendly.This app has both admin and general user login making it feasible for both sides,where admin can maintain the long list of orders,and consumer can keep placing their orders.
 The aim of the project is to
 * Save paper
 * Reduce work load of Cashier
@@ -18,7 +19,7 @@ The aim of the project is to
 * Reduce Long Queue and delays at Canteen
 * Promote Digitalisation and move toward modern and technologically advanced India.
 
-* GitHub repo Link: 
+* GitHub repo Link: [VJTI_Canteen](https://github.com/amanchhaparia/G.A.M.A)
 * Drive Link:
 
 ## Technology Stack
