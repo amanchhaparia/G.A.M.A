@@ -11,7 +11,12 @@
 * Yogesh
 
 ## Description
-Our aim of the project is to promote more "digital payments" and "Save Paper", with the help of this app we can avoid queues in the Canteen and can place orders at our convinence.
+The aim of the project is to
+* Save paper
+* Reduce work load of Cashier
+* Promote Digital Transaction
+* Reduce Long Queue and delays at Canteen
+* Promote Digitalisation and move toward modern and technologically advanced India.
 
 * GitHub repo Link: 
 * Drive Link:
