@@ -22,9 +22,9 @@ The aim of the project is to
 * Drive Link:
 
 ## Technology Stack
-1. Language:- Dart
-2. Framework:- Flutter
-3. Database:- Firestore
+1. Language:- [Dart](https://dart.dev)
+2. Framework:- [Flutter](https://flutter.dev)
+3. Database:- [Firestore](https://firebase.google.com/docs/firestore)
 
 ## Project Setup
 ### Prerequisites
