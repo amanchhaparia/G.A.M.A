@@ -1,3 +1,6 @@
+import 'package:VJTI_Canteen/models/http_exception.dart';
+import 'package:VJTI_Canteen/screens/orders_screen.dart';
+
 import '../models/fooditem.dart';
 import '../bloc/cartListBloc.dart';
 import 'package:flutter/material.dart';
@@ -64,8 +67,8 @@ class BottomBar extends StatelessWidget {
               onTap: () async {
                 var uid;
                 await funct().then((value) => (uid = value));
-                await Orders(uid)
-                    .updateUserOrder(foodItems, returnTotalAmount(foodItems));
+                Orders(uid).updateUserOrder(
+                    foodItems, returnTotalAmount(foodItems), context);
               },
               child: nextButtonBar()),
         ],

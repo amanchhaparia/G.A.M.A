@@ -30,12 +30,10 @@ class Search extends StatelessWidget {
 
 Future<List<FoodItem>> search(String search) async {
   await Future.delayed(Duration(seconds: 2));
-  return List.generate(search.length, (int index) {
-    return foodItems[index];
-  });
+  return foodItems.toList();
 }
 
-Future<List<FoodItem>> fetchFoodItems() async {
+Future<void> fetchFoodItems() async {
   Firestore.instance.collection('FoodItem').snapshots().listen((data) {
     data.documents.forEach((element) {
       foodItems.add(FoodItem(
@@ -46,5 +44,4 @@ Future<List<FoodItem>> fetchFoodItems() async {
           quantity: element['availability']));
     });
   });
-  return foodItems;
 }

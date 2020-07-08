@@ -99,14 +99,18 @@ class _AuthCardState extends State<AuthCard>
       if (_authMode == AuthMode.Login) {
         // Log user in
         //await Provider.of<Auth>(context, listen: false).login(_authData['email'], _authData['password']);
-        await Provider.of<Auth>(context, listen: false).signInWithEmailAndPassword(_authData['email'], _authData['password']);
+        await Provider.of<Auth>(context, listen: false)
+            .signInWithEmailAndPassword(
+                _authData['email'], _authData['password']);
         Navigator.of(context).pop();
-     } else {
+      } else {
         //await Provider.of<Auth>(context, listen: false).signup(_authData['email'], _authData['password']);
-        await Provider.of<Auth>(context, listen: false).registerWithEmailAndPassword(_authData['email'], _authData['password']);
+        await Provider.of<Auth>(context, listen: false)
+            .registerWithEmailAndPassword(
+                _authData['email'], _authData['password']);
         Navigator.of(context).pop();
-     }
-    } on HttpException catch(error){
+      }
+    } catch (error) {
       var errorMessage = 'Authenticate Failed!';
       if (error.toString().contains('EMAIL_EXISTS')) {
         errorMessage = 'This email address is already in use.!';
@@ -118,8 +122,8 @@ class _AuthCardState extends State<AuthCard>
         errorMessage = 'Invalid Password';
       }
       _showDialogue(errorMessage);
-    } 
-    
+    }
+
     setState(() {
       _isLoading = false;
     });

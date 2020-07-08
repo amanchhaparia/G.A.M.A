@@ -12,17 +12,18 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   String uid;
-  getuid() async {
+
+  getUID() async {
     final user = await FirebaseAuth.instance.currentUser();
-    return user.uid;
+    setState(() {
+      uid = user.uid;
+    });
   }
 
   @override
   void initState() {
+    getUID();
     super.initState();
-    setState(() {
-      uid = getuid();
-    });
   }
 
   @override

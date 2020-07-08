@@ -54,6 +54,7 @@ class OrderList extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.active) {
           return ListView.builder(
             shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, index) {
               return Column(
