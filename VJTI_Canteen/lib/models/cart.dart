@@ -1,5 +1,6 @@
 import '../models/fooditem.dart';
 import '../bloc/cartListBloc.dart';
+import '../bloc/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +39,11 @@ class Cart extends StatelessWidget {
 
 class BottomBar extends StatelessWidget {
   final List<FoodItem> foodItems;
+  final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
+  removeTheCart() {
+    bloc.emptyTheCart();
+  }
+
   BottomBar(this.foodItems);
   @override
   Widget build(BuildContext context) {
@@ -64,8 +70,10 @@ class BottomBar extends StatelessWidget {
               onTap: () async {
                 var uid;
                 await funct().then((value) => (uid = value));
-                Orders(uid).updateUserOrder(
-                    foodItems, returnTotalAmount(foodItems), context);
+                Orders(uid)
+                    .updateUserOrder(
+                        foodItems, returnTotalAmount(foodItems), context)
+                    .whenComplete(() => removeTheCart());
               },
               child: nextButtonBar()),
         ],

@@ -42,6 +42,11 @@ class CartProvider {
     return foodItems;
   }
 
+  emptyTheCart() {
+    foodItems.clear();
+    return foodItems;
+  }
+
   void increaseItemQuantity(FoodItem foodItem) => foodItem.incrementQuantity();
   void decreaseItemQuantity(FoodItem foodItem) => foodItem.decrementQuantity();
 }

@@ -142,7 +142,12 @@ class Auth with ChangeNotifier {
       Firestore.instance
           .collection('Users')
           .document(response.user.uid)
-          .setData({'balance': 0});
+          .setData({
+        'balance': 0,
+        'isOnionPresent': true,
+        'sweetiness': 20,
+        'spiciness': 20,
+      });
     } catch (e) {
       throw e;
     }

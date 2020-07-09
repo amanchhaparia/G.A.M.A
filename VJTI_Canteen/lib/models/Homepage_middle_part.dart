@@ -144,28 +144,28 @@ class _IncrementDecrementState extends State<IncrementDecrement> {
             child: Text('Add'),
             onPressed: () {
               setState(() {
-                if (widget.foodItem.availability > widget.foodItem.quantity) {
-                  addToCart(widget.foodItem);
-                  final snackBar = SnackBar(
-                    content: Text(
-                      '${widget.itemName} is added to the cart',
-                      style: TextStyle(color: Colors.amber, fontSize: 20),
-                    ),
-                    duration: Duration(milliseconds: 300),
-                  );
-                  Scaffold.of(context).showSnackBar(snackBar);
-                } else {
-                  setState(() {
-                    final snackBar = SnackBar(
-                      content: Text(
-                        'Sorry Only ${widget.foodItem.availability} units of ${widget.itemName} is available',
-                        style: TextStyle(color: Colors.amber, fontSize: 20),
-                      ),
-                      duration: Duration(milliseconds: 3000),
-                    );
-                    Scaffold.of(context).showSnackBar(snackBar);
-                  });
-                }
+                // if (widget.foodItem.availability > widget.foodItem.quantity) {
+                addToCart(widget.foodItem);
+                final snackBar = SnackBar(
+                  content: Text(
+                    '${widget.itemName} is added to the cart',
+                    style: TextStyle(color: Colors.amber, fontSize: 20),
+                  ),
+                  duration: Duration(milliseconds: 300),
+                );
+                Scaffold.of(context).showSnackBar(snackBar);
+                // } else {
+                //   setState(() {
+                //     final snackBar = SnackBar(
+                //       content: Text(
+                //         'Sorry Only ${widget.foodItem.availability} units of ${widget.itemName} is available',
+                //         style: TextStyle(color: Colors.amber, fontSize: 20),
+                //       ),
+                //       duration: Duration(milliseconds: 3000),
+                //     );
+                //     Scaffold.of(context).showSnackBar(snackBar);
+                //   });
+                // }
               });
             },
           )),

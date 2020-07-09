@@ -50,14 +50,7 @@ class WalletScreen extends StatelessWidget {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.1,
                   ),
-                  Text(
-                    'Balance :',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 40.0,
-                      color: Colors.black,
-                    ),
-                  ),
+                  Balance(),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.08,
                   ),
@@ -75,6 +68,47 @@ class WalletScreen extends StatelessWidget {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class Balance extends StatefulWidget {
+  const Balance({
+    Key key,
+  }) : super(key: key);
+  @override
+  _BalanceState createState() => _BalanceState();
+}
+
+class _BalanceState extends State<Balance> {
+  var balance;
+  getbalance() async {
+    final user = await FirebaseAuth.instance.currentUser();
+    final uid = user.uid;
+    Firestore.instance.collection('Users').document(uid).get().then((value) {
+      setState(() {
+        balance = value.data['balance'];
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    getbalance();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    getbalance();
+    return Text(
+      'Balance : ${balance.toString()}',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 40.0,
+        color: Colors.black,
       ),
     );
   }
