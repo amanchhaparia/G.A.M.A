@@ -10,7 +10,12 @@ const Color color3 = Colors.redAccent;
 
 var balance;
 
-class WalletScreen extends StatelessWidget {
+class WalletScreen extends StatefulWidget {
+  @override
+  _WalletScreenState createState() => _WalletScreenState();
+}
+
+class _WalletScreenState extends State<WalletScreen> {
   final amountController = TextEditingController();
 
   Future<void> addbalance() async {
@@ -73,8 +78,10 @@ class WalletScreen extends StatelessWidget {
                                     actions: <Widget>[
                                       new FlatButton(
                                         onPressed: () {
-                                          addbalance().whenComplete(() =>
-                                              Navigator.of(context).pop());
+                                          if(amountController==null)
+                                          return ;
+                                          else{addbalance().whenComplete(() =>
+                                              Navigator.of(context).pop());}
                                         },
                                         child: Text('Submit'),
                                       )

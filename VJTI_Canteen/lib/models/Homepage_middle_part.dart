@@ -41,7 +41,7 @@ class HomePageMiddlePart extends StatelessWidget {
                 borderRadius: BorderRadius.circular(34.0),
               ),
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.25,
+                height: MediaQuery.of(context).size.height * 0.21,
                 width: MediaQuery.of(context).size.width * 0.8,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(34),
@@ -72,7 +72,7 @@ class HomePageMiddlePart extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: MediaQuery.of(context).size.height * 0.07,
+            bottom: MediaQuery.of(context).size.height * 0.02,
             right: MediaQuery.of(context).size.width * 0.15,
             child: AutoSizeText(
               '₹${itemPrice.toStringAsFixed(0)}',
@@ -88,7 +88,7 @@ class HomePageMiddlePart extends StatelessWidget {
           ),
           Positioned(
             right: MediaQuery.of(context).size.width * 0.07,
-            top: MediaQuery.of(context).size.width * 0.15,
+            top: MediaQuery.of(context).size.width * 0.17,
             child: Container(
               height: 100,
               width: 170,
@@ -131,7 +131,7 @@ class _IncrementDecrementState extends State<IncrementDecrement> {
 
     return Positioned(
       right: MediaQuery.of(context).size.width * 0.1,
-      top: MediaQuery.of(context).size.height * 0.15,
+      top: MediaQuery.of(context).size.height * 0.14,
       child: Container(
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey[300], width: 2),

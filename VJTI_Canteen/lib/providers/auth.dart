@@ -145,8 +145,8 @@ class Auth with ChangeNotifier {
           .setData({
         'balance': 0,
         'isOnionPresent': true,
-        'sweetiness': 20,
-        'spiciness': 20,
+        'sweetiness': 5,
+        'spiciness': 5,
         'isJain': false,
         'email': email
       });

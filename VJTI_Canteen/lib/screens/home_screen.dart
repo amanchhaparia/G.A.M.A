@@ -20,6 +20,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final Duration duration = const Duration(milliseconds: 700);
+  GlobalKey _dashboardKey = GlobalKey();
+  GlobalKey _searchbarKey = GlobalKey();
+  GlobalKey _cartKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -28,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Bloc((i) => ColorBloc()),
       ],
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         backgroundColor: Colors.amber[300],
         body: ValueListenableBuilder(
             valueListenable: isCollapsed,
@@ -105,7 +110,7 @@ class _HomeState extends State<Home> {
           children: <Widget>[
             FirstHalf(),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
               child: TextField(
                 onChanged: (value) {
                   filterSearchResults(value);
@@ -121,7 +126,7 @@ class _HomeState extends State<Home> {
                         borderRadius: BorderRadius.all(Radius.circular(25.0)))),
               ),
             ),
-            SizedBox(height: 45),
+            SizedBox(height: 15),
             StreamBuilder(
               stream: Firestore.instance.collection('FoodItem').snapshots(),
               builder: (context, snapshot) {
@@ -132,7 +137,7 @@ class _HomeState extends State<Home> {
                     (index) => FoodItem(
                       id: snapshot.data.documents[index]['id'],
                       title: snapshot.data.documents[index]['name'],
-                      imgloc: 'assets/FoodItems/Bread_Pakoda.png',
+                      imgloc: snapshot.data.documents[index]['imageUrl'],
                       price:
                           (snapshot.data.documents[index]['price']).toDouble(),
                       availability: snapshot.data.documents[index]
@@ -203,7 +208,7 @@ class Items extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.4,
+      height: MediaQuery.of(context).size.height * 0.3,
       width: double.infinity,
       child: HomePageMiddlePart(
           imgloc, itemName, itemPrice, foodItem, availability),
@@ -247,7 +252,7 @@ class FirstHalf extends StatelessWidget {
             ),
           ]),
         ),
-        SizedBox(height: 10.0),
+        SizedBox(height: 20.0),
       ],
     );
   }
