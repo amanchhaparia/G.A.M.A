@@ -22,9 +22,9 @@ class AppDrawer extends StatelessWidget {
               SizedBox(height: MediaQuery.of(context).size.height * 0.1),
               CircleAvatar(
                 backgroundColor: Colors.blueGrey,
-                radius: MediaQuery.of(context).size.width * 0.2,
+                radius: MediaQuery.of(context).size.width * 0.22,
                 child: CircleAvatar(
-                  radius: MediaQuery.of(context).size.width * 0.17,
+                  radius: MediaQuery.of(context).size.width * 0.2,
                   backgroundImage: NetworkImage(
                       'https://thumbs.gfycat.com/ConsiderateFlamboyantHawaiianmonkseal-size_restricted.gif'),
                 ),

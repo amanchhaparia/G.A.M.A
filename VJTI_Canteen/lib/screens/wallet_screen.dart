@@ -9,6 +9,7 @@ const Color color2 = Colors.green;
 const Color color3 = Colors.redAccent;
 
 class WalletScreen extends StatelessWidget {
+  
   final amountController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -44,28 +45,24 @@ class WalletScreen extends StatelessWidget {
                             size: 30,
                           ),
                           onPressed: () {
-                            showModalBottomSheet(
+                            return showDialog(
                                 context: context,
-                                builder: (_) {
-                                  return Column(children: <Widget>[
-                                    Container(
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                            labelText:
-                                                'Enter the amount to be added'),
-                                        onSubmitted: (_) {},
-                                        keyboardType:
-                                            TextInputType.numberWithOptions(
-                                                decimal: true),
-                                        controller: amountController,
-                                      ),
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text('Add Balance'),
+                                    content: TextField(
+                                      controller: amountController,
+                                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                      decoration: InputDecoration(
+                                          hintText: 'Type amount here'),
                                     ),
-                                    FlatButton(
-                                      color: Colors.purple,
-                                      child: Text('Confirm'),
-                                      onPressed: () {},
-                                    )
-                                  ]);
+                                    actions: <Widget>[
+                                      new FlatButton(
+                                        onPressed: () {},
+                                        child: Text('Submit'),
+                                      )
+                                    ],
+                                  );
                                 });
                           },
                         ),

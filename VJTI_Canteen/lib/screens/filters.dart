@@ -42,6 +42,7 @@ class _FiltersState extends State<Filters> {
   }
 
   bool isOnionsPresent;
+  bool isJain = true;
   double sweetness;
   double spiciness;
 
@@ -142,6 +143,41 @@ class _FiltersState extends State<Filters> {
                               });
                             },
                             value: isOnionsPresent,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                    child: Card(
+                      elevation: 10.0,
+                      color: Colors.purple,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            height: 60,
+                            padding: const EdgeInsets.all(10.0),
+                            child: Center(
+                              child: Text(
+                                'JAIN',
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.amber),
+                              ),
+                            ),
+                          ),
+                          CupertinoSwitch(
+                            activeColor: Colors.green,
+                            trackColor: Colors.grey[100],
+                            onChanged: (value) {
+                              setState(() {
+                                isJain = !isJain;
+                              });
+                            },
+                            value: isJain,
                           ),
                         ],
                       ),
