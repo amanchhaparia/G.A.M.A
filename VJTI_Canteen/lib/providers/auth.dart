@@ -147,6 +147,8 @@ class Auth with ChangeNotifier {
         'isOnionPresent': true,
         'sweetiness': 20,
         'spiciness': 20,
+        'isJain': false,
+        'email': email
       });
     } catch (e) {
       throw e;

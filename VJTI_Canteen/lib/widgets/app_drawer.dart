@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:VJTI_Canteen/screens/filters.dart';
@@ -34,10 +36,7 @@ class AppDrawer extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.4,
                 child: Align(
                   alignment: Alignment.center,
-                  child: Text(
-                    'Customer Mail',
-                    style: TextStyle(color: Colors.black),
-                  ),
+                  child: CustomerMail(),
                 ),
               ),
               Divider(
@@ -115,6 +114,43 @@ class AppDrawer extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class CustomerMail extends StatefulWidget {
+  @override
+  _CustomerMailState createState() => _CustomerMailState();
+}
+
+class _CustomerMailState extends State<CustomerMail> {
+  var email = 'customer mail';
+
+  getemail() async {
+    final user = await FirebaseAuth.instance.currentUser();
+    Firestore.instance
+        .collection('Users')
+        .document(user.uid)
+        .get()
+        .then((value) {
+      setState(() {
+        email = value.data['email'];
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getemail();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      email,
+      style: TextStyle(color: Colors.black),
     );
   }
 }

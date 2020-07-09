@@ -8,8 +8,21 @@ const Color color1 = Colors.blue;
 const Color color2 = Colors.green;
 const Color color3 = Colors.redAccent;
 
+var balance;
+
 class WalletScreen extends StatelessWidget {
   final amountController = TextEditingController();
+
+  Future<void> addbalance() async {
+    final user = await FirebaseAuth.instance.currentUser();
+    return Firestore.instance
+        .collection('Users')
+        .document(user.uid)
+        .updateData({
+      'balance': double.parse(amountController.text) + balance,
+    }).whenComplete(() => print('added Successfully'));
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -59,7 +72,10 @@ class WalletScreen extends StatelessWidget {
                                     ),
                                     actions: <Widget>[
                                       new FlatButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          addbalance().whenComplete(() =>
+                                              Navigator.of(context).pop());
+                                        },
                                         child: Text('Submit'),
                                       )
                                     ],
@@ -105,7 +121,6 @@ class Balance extends StatefulWidget {
 }
 
 class _BalanceState extends State<Balance> {
-  var balance;
   getbalance() async {
     final user = await FirebaseAuth.instance.currentUser();
     final uid = user.uid;
@@ -117,15 +132,14 @@ class _BalanceState extends State<Balance> {
   }
 
   @override
-  void dispose() {
-    // TODO: implement dispose
+  void initState() {
+    // TODO: implement initState
     getbalance();
-    super.dispose();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    getbalance();
     return Text(
       'Balance : ₹${balance.toString()}',
       style: TextStyle(

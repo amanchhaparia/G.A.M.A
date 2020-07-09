@@ -20,6 +20,7 @@ class _FiltersState extends State<Filters> {
         isOnionsPresent = value.data['isOnionPresent'];
         sweetness = (value.data['sweetiness']).toDouble();
         spiciness = (value.data['spiciness']).toDouble();
+        isJain = value.data['isJain'];
       });
     }).whenComplete(() => print('done'));
     // Firestore.instance
@@ -42,7 +43,7 @@ class _FiltersState extends State<Filters> {
   }
 
   bool isOnionsPresent;
-  bool isJain = true;
+  bool isJain;
   double sweetness;
   double spiciness;
 
@@ -85,6 +86,7 @@ class _FiltersState extends State<Filters> {
                             'isOnionPresent': isOnionsPresent,
                             'sweetiness': sweetness,
                             'spiciness': spiciness,
+                            'isJain': isJain
                           }).whenComplete(() {
                             showAlert(context, 'Updated Successfully!');
                           });
