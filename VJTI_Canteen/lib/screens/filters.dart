@@ -9,37 +9,34 @@ class Filters extends StatefulWidget {
 }
 
 class _FiltersState extends State<Filters> {
-  String uid;
-
-  getUID() async {
+  Future<void> setFilters() async {
     final user = await FirebaseAuth.instance.currentUser();
-    setState(() {
-      uid = user.uid;
-    });
-  }
-
-  setFilters() {
-    // Firestore.instance.collection('Users').document(uid).get().then((value) {
-    //   isOnionsPresent = value.data['isOnionPresent'];
-    //   sweetness = (value.data['sweetiness']).toDouble();
-    //   spiciness = (value.data['spiciness']).toDouble();
-    // });
-    Firestore.instance
+    return Firestore.instance
         .collection('Users')
-        .document(uid)
-        .snapshots()
-        .listen((event) {
-      isOnionsPresent = event.data['isOnionPresent'];
-      sweetness = (event.data['sweetiness']).toDouble();
-      spiciness = (event.data['spiciness']).toDouble();
-    }).onDone(() {
-      setState(() {});
-    });
+        .document(user.uid)
+        .get()
+        .then((value) {
+      setState(() {
+        isOnionsPresent = value.data['isOnionPresent'];
+        sweetness = (value.data['sweetiness']).toDouble();
+        spiciness = (value.data['spiciness']).toDouble();
+      });
+    }).whenComplete(() => print('done'));
+    // Firestore.instance
+    //     .collection('Users')
+    //     .document(uid)
+    //     .snapshots()
+    //     .listen((event) {
+    //   isOnionsPresent = event.data['isOnionPresent'];
+    //   sweetness = (event.data['sweetiness']).toDouble();
+    //   spiciness = (event.data['spiciness']).toDouble();
+    // }).onDone(() {
+    //   setState(() {});
+    // });
   }
 
   @override
   void initState() {
-    getUID();
     setFilters();
     super.initState();
   }
@@ -53,7 +50,9 @@ class _FiltersState extends State<Filters> {
     return SafeArea(
       child: Scaffold(
         body: isOnionsPresent == null
-            ? Container()
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -75,7 +74,20 @@ class _FiltersState extends State<Filters> {
                           size: 40.0,
                           color: Colors.black,
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          final user =
+                              await FirebaseAuth.instance.currentUser();
+                          Firestore.instance
+                              .collection('Users')
+                              .document(user.uid)
+                              .updateData({
+                            'isOnionPresent': isOnionsPresent,
+                            'sweetiness': sweetness,
+                            'spiciness': spiciness,
+                          }).whenComplete(() {
+                            showAlert(context, 'Updated Successfully!');
+                          });
+                        },
                       ),
                     ],
                   ),
@@ -248,6 +260,26 @@ class _FiltersState extends State<Filters> {
                 ],
               ),
       ),
+    );
+  }
+
+  void showAlert(BuildContext context, String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text('Successfull'),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Okay'),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
