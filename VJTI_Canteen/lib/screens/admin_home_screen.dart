@@ -92,7 +92,14 @@ class UserContainer extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, index) {
-              return OrderItems(snapshot.data.documents[index], index);
+              return OrderItems(
+                snapshot.data.documents[index],
+                index,
+                document.data['spiciness'],
+                document.data['sweetiness'],
+                document.data['isOnionPresent'],
+                document.data['jain'],
+              );
             },
           );
         } else {
@@ -105,8 +112,13 @@ class UserContainer extends StatelessWidget {
 
 class OrderItems extends StatelessWidget {
   final DocumentSnapshot document;
+  final double spiciness;
+  final double sweetness;
+  final bool isOnionPresent;
+  final bool jain;
   int ind;
-  OrderItems(this.document, this.ind);
+  OrderItems(this.document, this.ind, this.spiciness, this.sweetness,
+      this.isOnionPresent, this.jain);
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -152,6 +164,37 @@ class OrderItems extends StatelessWidget {
                 );
               },
               itemCount: document.data['items'].length),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Spice level:${spiciness.toString()}',
+                  style: TextStyle(fontSize: 15),
+                ),
+                Text(
+                  'Sweetness :${sweetness.toString()}',
+                  style: TextStyle(fontSize: 15),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    isOnionPresent ? 'Onions allowed' : 'Onions not allowed',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  Text(
+                    jain ? 'Jain' : 'non-Jain',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ]),
+          ),
           ExpansionTile(
             title: Text(
               'More Information',

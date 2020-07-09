@@ -9,7 +9,6 @@ const Color color2 = Colors.green;
 const Color color3 = Colors.redAccent;
 
 class WalletScreen extends StatelessWidget {
-  
   final amountController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -52,7 +51,9 @@ class WalletScreen extends StatelessWidget {
                                     title: Text('Add Balance'),
                                     content: TextField(
                                       controller: amountController,
-                                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                      keyboardType:
+                                          TextInputType.numberWithOptions(
+                                              decimal: true),
                                       decoration: InputDecoration(
                                           hintText: 'Type amount here'),
                                     ),
