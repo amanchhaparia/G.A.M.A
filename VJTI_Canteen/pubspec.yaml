@@ -31,9 +31,7 @@ dependencies:
   auto_size_text: ^2.1.0
   firebase_auth: ^0.16.1
   cloud_firestore: ^0.13.6
-  flappy_search_bar: ^1.7.2
   intl: ^0.16.1
-  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -85,7 +83,7 @@ flutter:
 
     - family: Dealers
       fonts:
-        - asset: fonts/dealers_shaded.ttf    
+        - asset: fonts/dealers_shaded.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

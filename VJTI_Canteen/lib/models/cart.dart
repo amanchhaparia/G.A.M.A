@@ -1,6 +1,3 @@
-import 'package:VJTI_Canteen/models/http_exception.dart';
-import 'package:VJTI_Canteen/screens/orders_screen.dart';
-
 import '../models/fooditem.dart';
 import '../bloc/cartListBloc.dart';
 import 'package:flutter/material.dart';

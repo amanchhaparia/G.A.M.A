@@ -129,10 +129,6 @@ class _IncrementDecrementState extends State<IncrementDecrement> {
       bloc.addToList(foodItem);
     }
 
-    removeFromCart(FoodItem foodItem) {
-      bloc.removeFromList(foodItem);
-    }
-
     return Positioned(
       right: MediaQuery.of(context).size.width * 0.1,
       top: MediaQuery.of(context).size.height * 0.15,

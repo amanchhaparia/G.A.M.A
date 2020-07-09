@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../screens/orders_screen.dart';
 
 import '../models/fooditem.dart';
-import '../models/http_exception.dart';
 
 class OrderItem {
   final int total;

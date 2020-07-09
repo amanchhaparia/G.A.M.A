@@ -2,13 +2,16 @@ import 'package:VJTI_Canteen/screens/admin_login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+const Color color1 = Colors.blue;
+const Color color2 = Colors.green;
+const Color color3 = Colors.redAccent;
+
 class AdminHomeScreen extends StatelessWidget {
   static const routeName = '/adminHomeScreen';
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.yellow,
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +92,7 @@ class UserContainer extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, index) {
-              return OrderItems(snapshot.data.documents[index]);
+              return OrderItems(snapshot.data.documents[index], index);
             },
           );
         } else {
@@ -102,15 +105,15 @@ class UserContainer extends StatelessWidget {
 
 class OrderItems extends StatelessWidget {
   final DocumentSnapshot document;
-
-  OrderItems(this.document);
+  int ind;
+  OrderItems(this.document, this.ind);
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: ind % 3 == 0 ? color1 : ind % 3 == 1 ? color2 : color3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
-      shadowColor: Colors.red,
       elevation: 10.0,
       margin: EdgeInsets.all(10),
       child: Column(
@@ -123,45 +126,49 @@ class OrderItems extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 15.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Text(
-                              document.data['items'][index]['title'],
-                              style: TextStyle(
-                                fontSize: 30.0,
-                              ),
-                            ),
-                            Text(
-                              'x${document.data['items'][index]['quantity']}',
-                              style: TextStyle(fontSize: 30.0),
-                            )
-                          ],
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(right: 10.0, top: 10.0),
+                          child: Text(
+                            document.data['items'][index]['title'],
+                            style:
+                                TextStyle(fontSize: 20.0, color: Colors.white),
+                          ),
                         ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(right: 20.0, top: 10.0),
+                          child: Text(
+                            '${document.data['items'][index]['quantity']}',
+                            style:
+                                TextStyle(fontSize: 20.0, color: Colors.white),
+                          ),
+                        )
                       ],
                     ),
                   ),
                 );
               },
               itemCount: document.data['items'].length),
-          ListTile(
+          ExpansionTile(
             title: Text(
-              'Total:₹${document.data['amount']}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+              'More Information',
+              style: TextStyle(color: Colors.amber),
+            ),
+            backgroundColor: Colors.white,
+            children: <Widget>[
+              Text('Total:₹${document.data['amount']}'),
+              FlatButton(
+                onPressed: () {
+                  if (document.data['status'] == 'pending') {
+                    _showDialogue(context, document);
+                  }
+                },
+                child: Text('status: ${document.data['status']}'),
               ),
-            ),
-            subtitle: Text(
-              'status: ${document.data['status']}',
-            ),
-            trailing: Icon(Icons.keyboard_arrow_down),
-            onTap: () {
-              if (document.data['status'] == 'pending') {
-                _showDialogue(context, document);
-              }
-            },
+            ],
           ),
         ],
       ),

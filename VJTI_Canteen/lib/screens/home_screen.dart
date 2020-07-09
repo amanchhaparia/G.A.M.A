@@ -1,4 +1,3 @@
-import 'package:VJTI_Canteen/screens/search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:VJTI_Canteen/widgets/app_drawer.dart';
@@ -12,6 +11,7 @@ import '../models/cart.dart';
 import '../bloc/listTileColorBloc.dart';
 
 var isCollapsed = ValueNotifier<bool>(true);
+List<FoodItem> foodItems = [];
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -64,9 +64,39 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   BuildContext context;
   Home(this.context);
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  TextEditingController editingController = TextEditingController();
+  List<FoodItem> duplicateFoodItems = foodItems;
+
+  void filterSearchResults(String query) {
+    List<FoodItem> dummySearchList = [];
+    if (query.isNotEmpty) {
+      query = query.toLowerCase();
+      for (int i = 0; i < foodItems.length; i++) {
+        if (foodItems[i].title.toLowerCase().contains(query)) {
+          dummySearchList.add(foodItems[i]);
+        }
+      }
+      setState(() {
+        duplicateFoodItems.clear();
+        duplicateFoodItems.addAll(dummySearchList);
+      });
+    } else {
+      setState(() {
+        duplicateFoodItems.clear();
+        duplicateFoodItems.addAll(foodItems);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,30 +104,57 @@ class Home extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             FirstHalf(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                onChanged: (value) {
+                  filterSearchResults(value);
+                },
+                cursorColor: Colors.amber,
+                controller: editingController,
+                decoration: InputDecoration(
+                    fillColor: Colors.grey,
+                    labelText: "Search for Food Item",
+                    hintText: "Search",
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+              ),
+            ),
             SizedBox(height: 45),
             StreamBuilder(
               stream: Firestore.instance.collection('FoodItem').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.active) {
                   print('yes');
+                  foodItems = List<FoodItem>.generate(
+                    snapshot.data.documents.length,
+                    (index) => FoodItem(
+                      id: snapshot.data.documents[index]['id'],
+                      title: snapshot.data.documents[index]['name'],
+                      imgloc: 'assets/FoodItems/Bread_Pakoda.png',
+                      price:
+                          (snapshot.data.documents[index]['price']).toDouble(),
+                      availability: snapshot.data.documents[index]
+                          ['availability'],
+                    ),
+                  );
+
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: ScrollPhysics(),
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (context, index) => ItemContainer(
-                      foodItem: FoodItem(
-                        id: snapshot.data.documents[index]['id'],
-                        title: snapshot.data.documents[index]['name'],
-                        imgloc: 'assets/FoodItems/Bread_Pakoda.png',
-                        price: (snapshot.data.documents[index]['price'])
-                            .toDouble(),
-                        availability: snapshot.data.documents[index]
-                            ['availability'],
-                      ),
-                    ),
+                    itemCount: duplicateFoodItems.isEmpty
+                        ? foodItems.length
+                        : duplicateFoodItems.length,
+                    itemBuilder: (context, index) => duplicateFoodItems.isEmpty
+                        ? ItemContainer(
+                            foodItem: foodItems[index],
+                          )
+                        : ItemContainer(
+                            foodItem: duplicateFoodItems[index],
+                          ),
                   );
                 }
-
                 return Center(
                   child: CircularProgressIndicator(),
                 );
@@ -155,6 +212,7 @@ class Items extends StatelessWidget {
 }
 
 class FirstHalf extends StatelessWidget {
+  TextEditingController editingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -190,54 +248,9 @@ class FirstHalf extends StatelessWidget {
           ]),
         ),
         SizedBox(height: 10.0),
-        InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (BuildContext context) => Search(),
-                ),
-              );
-            },
-            child: Container(
-              margin: EdgeInsets.all(10.0),
-              padding: EdgeInsets.all(15.0),
-              height: 50.0,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(40.0),
-              ),
-              child: Align(
-                  alignment: Alignment.bottomLeft, child: Icon(Icons.search)),
-            )),
       ],
     );
   }
-
-  // Widget searchBar() {
-  //   return Material(
-  //     elevation: 5.0,
-  //     borderRadius: BorderRadius.circular(30.0),
-  //     child: Container(
-  //       child: TextField(
-  //         decoration: InputDecoration(
-  //           contentPadding:
-  //               EdgeInsets.symmetric(horizontal: 32, vertical: 14.0),
-  //           hintText: ' Search any food',
-  //           suffixIcon: Material(
-  //             borderRadius: BorderRadius.circular(20.0),
-  //             child: Icon(
-  //               Icons.search,
-  //               color: Colors.black,
-  //             ),
-  //             elevation: 5.0,
-  //           ),
-  //           border: InputBorder.none,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget title() {
     return Row(
