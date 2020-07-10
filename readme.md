@@ -32,8 +32,8 @@ The App has two login namely,
               
 
 * GitHub repo Link: [VJTI_Canteen](https://github.com/amanchhaparia/G.A.M.A)
-* demo video : [click here](https://drive.google.com/file/d/1p8aZjAUvL_0ewFnd1KmNet50JE9YAQAr/view?usp=sharing)
-* apk Link: [VJTI_Canteen.apk](https://drive.google.com/file/d/1pHiY4YNWt2tDf2GcuJTD_-6hkKXfypNQ/view?usp=sharing)
+* demo video : [click here](https://drive.google.com/folderview?id=1pG8Ke7otZDB1VNZ49krR9OF1oWo_iSid)
+* apk Link: [VJTI_Canteen.apk](https://drive.google.com/folderview?id=1pG8Ke7otZDB1VNZ49krR9OF1oWo_iSid)
 * Drive Link:[Drive Link](https://drive.google.com/folderview?id=1pG8Ke7otZDB1VNZ49krR9OF1oWo_iSid)
 
 ## Technology Stack
