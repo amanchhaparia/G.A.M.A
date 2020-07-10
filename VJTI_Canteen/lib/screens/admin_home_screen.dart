@@ -116,7 +116,7 @@ class OrderItems extends StatelessWidget {
   final double sweetness;
   final bool isOnionPresent;
   final bool jain;
-  int ind;
+  final int ind;
   OrderItems(this.document, this.ind, this.spiciness, this.sweetness,
       this.isOnionPresent, this.jain);
   @override

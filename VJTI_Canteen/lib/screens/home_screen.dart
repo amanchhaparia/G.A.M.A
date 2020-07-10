@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:VJTI_Canteen/widgets/app_drawer.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/fooditem.dart';
 import '../models/Homepage_middle_part.dart';
-
+import 'package:showcaseview/showcaseview.dart';
 import '../bloc/cartListBloc.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import '../models/cart.dart';
@@ -20,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final Duration duration = const Duration(milliseconds: 700);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -28,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Bloc((i) => ColorBloc()),
       ],
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         backgroundColor: Colors.amber[300],
         body: ValueListenableBuilder(
             valueListenable: isCollapsed,
@@ -50,11 +52,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? 0
                         : MediaQuery.of(context).size.height * -0.25,
                     child: Material(
-                      borderRadius: BorderRadius.all(Radius.circular(40)),
-                      animationDuration: Duration(milliseconds: 700),
-                      elevation: 20.0,
-                      child: Home(context),
-                    ),
+                        borderRadius: BorderRadius.all(Radius.circular(40)),
+                        animationDuration: Duration(milliseconds: 700),
+                        elevation: 20.0,
+                        child: ShowCaseWidget(
+                          builder: Builder(
+                            builder: (context) => Home(),
+                          ),
+                        )),
                   ),
                 ],
               );
@@ -64,10 +69,30 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class Home extends StatefulWidget {
-  BuildContext context;
-  Home(this.context);
+class KeysToBeInherited extends InheritedWidget {
+  final GlobalKey dashboardIndicatorKey;
+  final GlobalKey searchBarIndicatorKey;
+  final GlobalKey cartIndicatorKey;
 
+  KeysToBeInherited({
+    this.dashboardIndicatorKey,
+    this.searchBarIndicatorKey,
+    this.cartIndicatorKey,
+    Widget child,
+  }) : super(child: child);
+
+  static KeysToBeInherited of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType();
+  }
+
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) {
+    // TODO: implement updateShouldNotify
+    return true;
+  }
+}
+
+class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
@@ -97,70 +122,112 @@ class _HomeState extends State<Home> {
     }
   }
 
+  GlobalKey _dashboardKey = GlobalKey();
+  GlobalKey _searchBarKey = GlobalKey();
+  GlobalKey _cartKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: ListView(
-          children: <Widget>[
-            FirstHalf(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                onChanged: (value) {
-                  filterSearchResults(value);
-                },
-                cursorColor: Colors.amber,
-                controller: editingController,
-                decoration: InputDecoration(
-                    fillColor: Colors.grey,
-                    labelText: "Search for Food Item",
-                    hintText: "Search",
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-              ),
-            ),
-            SizedBox(height: 45),
-            StreamBuilder(
-              stream: Firestore.instance.collection('FoodItem').snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.active) {
-                  print('yes');
-                  foodItems = List<FoodItem>.generate(
-                    snapshot.data.documents.length,
-                    (index) => FoodItem(
-                      id: snapshot.data.documents[index]['id'],
-                      title: snapshot.data.documents[index]['name'],
-                      imgloc: 'assets/FoodItems/Bread_Pakoda.png',
-                      price:
-                          (snapshot.data.documents[index]['price']).toDouble(),
-                      availability: snapshot.data.documents[index]
-                          ['availability'],
-                    ),
-                  );
+    SharedPreferences preferences;
+    displayShowcase() async {
+      preferences = await SharedPreferences.getInstance();
+      bool showCaseVisibilityStatus = preferences.getBool("displayShowcase");
+      if (showCaseVisibilityStatus == null) {
+        return true;
+      }
+      return false;
+    }
 
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: ScrollPhysics(),
-                    itemCount: duplicateFoodItems.isEmpty
-                        ? foodItems.length
-                        : duplicateFoodItems.length,
-                    itemBuilder: (context, index) => duplicateFoodItems.isEmpty
-                        ? ItemContainer(
-                            foodItem: foodItems[index],
-                          )
-                        : ItemContainer(
-                            foodItem: duplicateFoodItems[index],
-                          ),
+    displayShowcase().then((status) {
+      if (status) {
+        preferences.setBool("displayShowcase", false);
+        ShowCaseWidget.of(context).startShowCase([
+          _dashboardKey,
+          _cartKey,
+          _searchBarKey,
+        ]);
+      }
+    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   ShowCaseWidget.of(context).startShowCase([
+    //     _dashboardKey,
+    //     _cartKey,
+    //     _searchBarKey,
+    //   ]);
+    // });
+    return KeysToBeInherited(
+      cartIndicatorKey: _cartKey,
+      dashboardIndicatorKey: _dashboardKey,
+      searchBarIndicatorKey: _searchBarKey,
+      child: Scaffold(
+        body: Container(
+          child: ListView(
+            children: <Widget>[
+              FirstHalf(),
+              Showcase(
+                key: _searchBarKey,
+                description: "Search for FoodItems here",
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: TextField(
+                    onChanged: (value) {
+                      filterSearchResults(value);
+                    },
+                    cursorColor: Colors.amber,
+                    controller: editingController,
+                    decoration: InputDecoration(
+                        fillColor: Colors.grey,
+                        labelText: "Search for Food Item",
+                        hintText: "Search",
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(25.0)))),
+                  ),
+                ),
+              ),
+              SizedBox(height: 15),
+              StreamBuilder(
+                stream: Firestore.instance.collection('FoodItem').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active) {
+                    print('yes');
+                    foodItems = List<FoodItem>.generate(
+                      snapshot.data.documents.length,
+                      (index) => FoodItem(
+                        id: snapshot.data.documents[index]['id'],
+                        title: snapshot.data.documents[index]['name'],
+                        imgloc: snapshot.data.documents[index]['imageUrl'],
+                        price: (snapshot.data.documents[index]['price'])
+                            .toDouble(),
+                        availability: snapshot.data.documents[index]
+                            ['availability'],
+                      ),
+                    );
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: ScrollPhysics(),
+                      itemCount: duplicateFoodItems.isEmpty
+                          ? foodItems.length
+                          : duplicateFoodItems.length,
+                      itemBuilder: (context, index) =>
+                          duplicateFoodItems.isEmpty
+                              ? ItemContainer(
+                                  foodItem: foodItems[index],
+                                )
+                              : ItemContainer(
+                                  foodItem: duplicateFoodItems[index],
+                                ),
+                    );
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(),
                   );
-                }
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
-            ),
-          ],
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -203,16 +270,20 @@ class Items extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.4,
-      width: double.infinity,
-      child: HomePageMiddlePart(
-          imgloc, itemName, itemPrice, foodItem, availability),
-    );
+        height: MediaQuery.of(context).size.height * 0.3,
+        width: double.infinity,
+        child: HomePageMiddlePart(
+          imgloc,
+          itemName,
+          itemPrice,
+          foodItem,
+          availability,
+        ));
   }
 }
 
 class FirstHalf extends StatelessWidget {
-  TextEditingController editingController = TextEditingController();
+  final TextEditingController editingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -247,7 +318,7 @@ class FirstHalf extends StatelessWidget {
             ),
           ]),
         ),
-        SizedBox(height: 10.0),
+        SizedBox(height: 20.0),
       ],
     );
   }
@@ -330,7 +401,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           InkWell(
-            child: Icon(Icons.menu),
+            child: Showcase(
+              key: KeysToBeInherited.of(context).dashboardIndicatorKey,
+              description: "Click here to open the options drawer",
+              child: Icon(Icons.menu),
+            ),
             onTap: () {
               setState(() {
                 isCollapsed.value = !isCollapsed.value;
@@ -398,9 +473,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
             Positioned(
               right: MediaQuery.of(context).size.width * 0.06,
               top: MediaQuery.of(context).size.width * 0.08,
-              child: Icon(
-                Icons.shopping_cart,
-                size: 30,
+              child: Showcase(
+                key: KeysToBeInherited.of(context).cartIndicatorKey,
+                description: "Click here to review the items in your cart",
+                child: Icon(
+                  Icons.shopping_cart,
+                  size: 30,
+                ),
               ),
             ),
           ],

@@ -101,7 +101,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
 class OrderListItem extends StatelessWidget {
   final DocumentSnapshot document;
-  int ind;
+  final int ind;
   OrderListItem(this.document, this.ind);
   @override
   Widget build(BuildContext context) {

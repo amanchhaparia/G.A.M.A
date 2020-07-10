@@ -19,6 +19,16 @@ The aim of the project is to
 * Reduce Long Queue and delays at Canteen
 * Promote Digitalisation and move toward modern and technologically advanced India.
 
+The App has two login namely,
+* Admin:- The admin can see the list of food orders placed in the system.
+* Consumer:- This page is for general consumers who can place their orders here.The Consumer login also has 
+             
+             * Cart Screen :- This page allows Users to see the cart list and edit them as per the need
+             * Wallet Screen :- This page shows the remaining balance of the user.It also provides the utility to add the money into wallet for easy transaction.
+             * Filter Screen :- This page allows users to set their particular taste of food.This helps in setting spiciness,sweetness,should onions be present.
+             
+              
+
 * GitHub repo Link: [VJTI_Canteen](https://github.com/amanchhaparia/G.A.M.A)
 * Drive Link:
 
@@ -52,6 +62,7 @@ flutter build apk
 
 ```
 ## Applications
+Have you ever felt overwhelmed by the long queue in the Canteen during rush hours for getting just a receipt,So to make you a bit comfortable we here brings to you the VJTI Canteen,
 * With the help of the app we can promote "Digital Payments" & "Save Papers".
 * One can avoid long queues in the canteen and Saves time.
 * Place orders as per our convinence

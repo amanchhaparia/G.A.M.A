@@ -148,9 +148,13 @@ class _CustomerMailState extends State<CustomerMail> {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      email,
-      style: TextStyle(color: Colors.black),
+    return FittedBox(
+      child: Text(
+        email,
+        style: TextStyle(
+          color: Colors.black,
+        ),
+      ),
     );
   }
 }

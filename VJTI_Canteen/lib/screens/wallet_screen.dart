@@ -82,8 +82,10 @@ class _WalletScreenState extends State<WalletScreen> {
                                     actions: <Widget>[
                                       new FlatButton(
                                         onPressed: () {
-                                          addbalance().whenComplete(() =>
-                                              Navigator.of(context).pop());
+                                          if(amountController==null)
+                                          return ;
+                                          else{addbalance().whenComplete(() =>
+                                              Navigator.of(context).pop());}
                                         },
                                         child: Text('Submit'),
                                       )
@@ -142,6 +144,7 @@ class _BalanceState extends State<Balance> {
 
   @override
   void initState() {
+    // ignore: todo
     // TODO: implement initState
     getbalance();
     super.initState();
@@ -211,7 +214,7 @@ class _TransactionListOfOrdersState extends State<TransactionListOfOrders> {
 
 class OrderListItem extends StatelessWidget {
   final DocumentSnapshot document;
-  int ind;
+  final int ind;
   OrderListItem(this.document, this.ind);
   @override
   Widget build(BuildContext context) {
