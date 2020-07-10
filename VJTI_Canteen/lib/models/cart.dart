@@ -50,10 +50,11 @@ class _MainScreenState extends State<MainScreen> {
   GlobalKey _nextButton = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    SharedPreferences preferences;
+    SharedPreferences cartPreferences;
     displayShowcase() async {
-      preferences = await SharedPreferences.getInstance();
-      bool showCaseVisibilityStatus = preferences.getBool("displayShowcase");
+      cartPreferences = await SharedPreferences.getInstance();
+      bool showCaseVisibilityStatus =
+          cartPreferences.getBool("displayShowcase");
       if (showCaseVisibilityStatus == null) {
         return true;
       }
@@ -62,7 +63,7 @@ class _MainScreenState extends State<MainScreen> {
 
     displayShowcase().then((status) {
       if (status) {
-        preferences.setBool("displayShowcase", false);
+        cartPreferences.setBool("displayShowcase", false);
         ShowCaseWidget.of(context).startShowCase([
           _deleteButton,
           _nextButton,
@@ -114,14 +115,22 @@ class KeysToBeInherited extends InheritedWidget {
   }
 }
 
-class BottomBar extends StatelessWidget {
+class BottomBar extends StatefulWidget {
   final List<FoodItem> foodItems;
+  BottomBar(this.foodItems);
+
+  @override
+  _BottomBarState createState() => _BottomBarState();
+}
+
+class _BottomBarState extends State<BottomBar> {
   final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
+  var _isLoading = false;
+
   removeTheCart() {
     bloc.emptyTheCart();
   }
 
-  BottomBar(this.foodItems);
   @override
   Widget build(BuildContext context) {
     funct() async {
@@ -130,35 +139,45 @@ class BottomBar extends StatelessWidget {
       return user.uid;
     }
 
-    return Container(
-      margin: EdgeInsets.only(left: 35, bottom: 25),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          totalAmount(foodItems),
-          Divider(
-            height: 0.8,
-            color: Colors.grey[700],
-          ),
-          Container(
-            height: 20,
-          ),
-          GestureDetector(
-              onTap: () async {
-                var uid;
-                await funct().then((value) => (uid = value));
-                Orders(uid)
-                    .updateUserOrder(
-                        foodItems, returnTotalAmount(foodItems), context)
-                    .whenComplete(() => removeTheCart());
-              },
-              child: Showcase(
-                  key: KeysToBeInherited.of(context).nextIndicatorKey,
-                  description: "Click here to Place the Order",
-                  child: nextButtonBar())),
-        ],
-      ),
-    );
+    return _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Container(
+            margin: EdgeInsets.only(left: 35, bottom: 25),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                totalAmount(widget.foodItems),
+                Divider(
+                  height: 0.8,
+                  color: Colors.grey[700],
+                ),
+                Container(
+                  height: 20,
+                ),
+                GestureDetector(
+                    onTap: () async {
+                      var uid;
+                      await funct().then((value) => (uid = value));
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      Orders(uid)
+                          .updateUserOrder(widget.foodItems,
+                              returnTotalAmount(widget.foodItems), context)
+                          .whenComplete(() => removeTheCart())
+                          .whenComplete(() {
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      });
+                    },
+                    child: Showcase(
+                        key: KeysToBeInherited.of(context).nextIndicatorKey,
+                        description: "Click here to Place the Order",
+                        child: nextButtonBar())),
+              ],
+            ),
+          );
   }
 }
 
