@@ -73,3 +73,17 @@ Have you ever felt overwhelmed by the long queue in the Canteen during rush hour
 * Adding a expense tracker based on your orders.
 
 ## Screenshots
+
+![HomeScreen](docs/ScreenShots/homeScreen.jpg)
+![HomeScreen](docs/ScreenShots/adminHomeScreen.jpg)
+![HomeScreen](docs/ScreenShots/adminLoginScreen.jpg)
+![HomeScreen](docs/ScreenShots/appDrawer.jpg)
+![HomeScreen](docs/ScreenShots/cartScreen.jpg)
+![HomeScreen](docs/ScreenShots/cartScreen2.jpg)
+![HomeScreen](docs/ScreenShots/filters.jpg)
+![HomeScreen](docs/ScreenShots/ordersScreen.jpg)
+![HomeScreen](docs/ScreenShots/startingScreen.jpg)
+![HomeScreen](docs/ScreenShots/userLoginScreen.jpg)
+![HomeScreen](docs/ScreenShots/walletScreen.jpg)
+
+
