@@ -185,7 +185,7 @@ class OrderItems extends StatelessWidget {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
+                  jain? Container():Text(
                     isOnionPresent ? 'Onions allowed' : 'Onions not allowed',
                     style: TextStyle(fontSize: 15),
                   ),

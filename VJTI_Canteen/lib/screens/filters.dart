@@ -84,7 +84,7 @@ class _FiltersState extends State<Filters> {
                                 .collection('Users')
                                 .document(user.uid)
                                 .updateData({
-                              'isOnionPresent': isOnionsPresent,
+                              'isOnionPresent': isJain,
                               'sweetiness': sweetness,
                               'spiciness': spiciness,
                               'isJain': isJain
