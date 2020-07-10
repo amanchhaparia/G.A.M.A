@@ -53,8 +53,9 @@ class Orders with ChangeNotifier {
               .map((cp) =>
                   {'id': cp.id, 'title': cp.title, 'quantity': cp.quantity})
               .toList()
-        }).whenComplete(
-            () => Navigator.of(context).pushNamed(OrderScreen.routeName));
+        }).whenComplete(() {
+          print('done');
+        });
       } catch (e) {
         print(e.toString());
       }

@@ -1,3 +1,4 @@
+import 'package:VJTI_Canteen/screens/orders_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcase.dart';
 import 'package:showcaseview/showcase_widget.dart';
@@ -167,11 +168,13 @@ class _BottomBarState extends State<BottomBar> {
                         Orders(uid)
                             .updateUserOrder(widget.foodItems,
                                 returnTotalAmount(widget.foodItems), context)
-                            .whenComplete(() => removeTheCart())
-                            .whenComplete(() {
+                            .then((_) => removeTheCart())
+                            .then((_) {
                           setState(() {
                             _isLoading = false;
                           });
+                        }).whenComplete(() {
+                          _showAlert(context, 'Order placed successfully.!');
                         });
                       }
                     },
@@ -195,7 +198,12 @@ class _BottomBarState extends State<BottomBar> {
             FlatButton(
               child: Text('Okay'),
               onPressed: () {
-                Navigator.of(ctx).pop();
+                if (errorMessage == 'Cart is empty.!') {
+                  Navigator.of(ctx).pop();
+                } else {
+                  Navigator.of(context)
+                      .pushReplacementNamed(OrderScreen.routeName);
+                }
               },
             ),
           ],
