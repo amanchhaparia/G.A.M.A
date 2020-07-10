@@ -62,6 +62,7 @@ flutter build apk
 
 ```
 ## Applications
+Have you ever felt overwhelmed by the long queue in the Canteen during rush hours for getting just a receipt,So to make you a bit comfortable we here brings to you the VJTI Canteen,
 * With the help of the app we can promote "Digital Payments" & "Save Papers".
 * One can avoid long queues in the canteen and Saves time.
 * Place orders as per our convinence
