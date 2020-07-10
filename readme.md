@@ -78,16 +78,16 @@ Have you ever felt overwhelmed by the long queue in the Canteen during rush hour
 
 ## Screenshots
 
-![HomeScreen](docs/ScreenShots/homeScreen.jpg)
-![HomeScreen](docs/ScreenShots/adminHomeScreen.jpg)
-![HomeScreen](docs/ScreenShots/adminLoginScreen.jpg)
-![HomeScreen](docs/ScreenShots/appDrawer.jpg)
-![HomeScreen](docs/ScreenShots/cartScreen.jpg)
-![HomeScreen](docs/ScreenShots/cartScreen2.jpg)
-![HomeScreen](docs/ScreenShots/filters.jpg)
-![HomeScreen](docs/ScreenShots/ordersScreen.jpg)
-![HomeScreen](docs/ScreenShots/startingScreen.jpg)
-![HomeScreen](docs/ScreenShots/userLoginScreen.jpg)
-![HomeScreen](docs/ScreenShots/walletScreen.jpg)
+![HomeScreen](https://github.com/amanchhaparia/G.A.M.A/blob/master/docs/ScreenShots/homeScreen.jpg)
+![HomeScreen](https://github.com/amanchhaparia/G.A.M.A/blob/master/docs/ScreenShots/adminHomeScreen.jpg)
+![HomeScreen](https://github.com/amanchhaparia/G.A.M.A/blob/master/docs/ScreenShots/adminLoginScreen.jpg)
+![HomeScreen](https://github.com/amanchhaparia/G.A.M.A/blob/master/docs/ScreenShots/appDrawer.jpg)
+![HomeScreen](https://github.com/amanchhaparia/G.A.M.A/blob/master/docs/ScreenShots/cartScreen.jpg)
+![HomeScreen](https://github.com/amanchhaparia/G.A.M.A/blob/master/docs/ScreenShots/cartScreen2.jpg)
+![HomeScreen](https://github.com/amanchhaparia/G.A.M.A/blob/master/docs/ScreenShots/filters.jpg)
+![HomeScreen](https://github.com/amanchhaparia/G.A.M.A/blob/master/docs/ScreenShots/ordersScreen.jpg)
+![HomeScreen](https://github.com/amanchhaparia/G.A.M.A/blob/master/docs/ScreenShots/startingScreen.jpg)
+![HomeScreen](https://github.com/amanchhaparia/G.A.M.A/blob/master/docs/ScreenShots/userLoginScreen.jpg)
+![HomeScreen](https://github.com/amanchhaparia/G.A.M.A/blob/master/docs/ScreenShots/walletScreen.jpg)
 
 
