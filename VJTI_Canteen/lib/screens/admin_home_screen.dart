@@ -95,8 +95,8 @@ class UserContainer extends StatelessWidget {
               return OrderItems(
                 snapshot.data.documents[index],
                 index,
-                document.data['spiciness'],
-                document.data['sweetiness'],
+                document.data['spiciness'].toDouble(),
+                document.data['sweetiness'].toDouble(),
                 document.data['isOnionPresent'],
                 document.data['isJain'],
               );

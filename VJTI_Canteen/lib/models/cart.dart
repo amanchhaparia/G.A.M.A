@@ -54,6 +54,7 @@ class _MainScreenState extends State<MainScreen> {
     SharedPreferences cartPreferences;
     displayShowcase() async {
       cartPreferences = await SharedPreferences.getInstance();
+
       bool showCaseVisibilityStatus =
           cartPreferences.getBool("displayShowcase");
       if (showCaseVisibilityStatus == null) {
@@ -74,7 +75,8 @@ class _MainScreenState extends State<MainScreen> {
     });
 
     // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   ShowCaseWidget.of(context).startShowCase([_deleteButton,_nextButton,_backButton]);
+    //   ShowCaseWidget.of(context)
+    //       .startShowCase([_deleteButton, _nextButton, _backButton]);
     // });
 
     return KeysToBeInherited(
@@ -202,8 +204,7 @@ class _BottomBarState extends State<BottomBar> {
                 if (errorMessage == 'Cart is empty.!') {
                   Navigator.of(ctx).pop();
                 } else {
-                  Navigator.of(ctx)
-                      .pushReplacementNamed(OrderScreen.routeName);
+                  Navigator.of(ctx).pushReplacementNamed(OrderScreen.routeName);
                 }
               },
             ),

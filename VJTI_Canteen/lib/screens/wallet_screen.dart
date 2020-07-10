@@ -82,10 +82,12 @@ class _WalletScreenState extends State<WalletScreen> {
                                     actions: <Widget>[
                                       new FlatButton(
                                         onPressed: () {
-                                          if(amountController==null)
-                                          return ;
-                                          else{addbalance().whenComplete(() =>
-                                              Navigator.of(context).pop());}
+                                          if (amountController == null)
+                                            return;
+                                          else {
+                                            addbalance().whenComplete(() =>
+                                                Navigator.of(context).pop());
+                                          }
                                         },
                                         child: Text('Submit'),
                                       )
@@ -109,7 +111,6 @@ class _WalletScreenState extends State<WalletScreen> {
             ),
             SingleChildScrollView(
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.9,
                 decoration: BoxDecoration(
                   color: Colors.white,
                 ),
@@ -267,7 +268,7 @@ class OrderListItem extends StatelessWidget {
                       ),
                     );
                   },
-                )
+                ),
               ],
             ),
           ],

@@ -173,11 +173,12 @@ class _HomeState extends State<Home> {
           child: ListView(
             children: <Widget>[
               FirstHalf(),
-              Showcase(
-                key: _searchBarKey,
-                description: "Search for FoodItems here",
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: Showcase(
+                  showcaseBackgroundColor: Colors.redAccent,
+                  key: _searchBarKey,
+                  description: "Search for FoodItems here",
                   child: TextField(
                     onChanged: (value) {
                       filterSearchResults(value);
@@ -411,6 +412,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         children: <Widget>[
           InkWell(
             child: Showcase(
+              showcaseBackgroundColor: Colors.redAccent,
               key: KeysToBeInherited.of(context).dashboardIndicatorKey,
               description: "Click here to open the options drawer",
               child: Icon(Icons.menu),
@@ -485,6 +487,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
               child: Showcase(
                 key: KeysToBeInherited.of(context).cartIndicatorKey,
                 description: "Click here to review the items in your cart",
+                showcaseBackgroundColor: Colors.redAccent,
                 child: Icon(
                   Icons.shopping_cart,
                   size: 30,
