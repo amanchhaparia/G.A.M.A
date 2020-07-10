@@ -23,47 +23,56 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      blocs: [
-        Bloc((i) => CartListBloc()),
-        Bloc((i) => ColorBloc()),
-      ],
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.amber[300],
-        body: ValueListenableBuilder(
-            valueListenable: isCollapsed,
-            builder: (context, value, widget) {
-              return Stack(
-                children: <Widget>[
-                  AppDrawer(),
-                  AnimatedPositioned(
-                    duration: duration,
-                    top: isCollapsed.value
-                        ? 0
-                        : MediaQuery.of(context).size.height * 0.1,
-                    bottom: isCollapsed.value
-                        ? 0
-                        : MediaQuery.of(context).size.height * 0,
-                    left: isCollapsed.value
-                        ? 0
-                        : MediaQuery.of(context).size.width * 0.5,
-                    right: isCollapsed.value
-                        ? 0
-                        : MediaQuery.of(context).size.height * -0.25,
-                    child: Material(
-                        borderRadius: BorderRadius.all(Radius.circular(40)),
-                        animationDuration: Duration(milliseconds: 700),
-                        elevation: 20.0,
-                        child: ShowCaseWidget(
-                          builder: Builder(
-                            builder: (context) => Home(),
-                          ),
-                        )),
-                  ),
-                ],
-              );
-            }),
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: BlocProvider(
+        blocs: [
+          Bloc((i) => CartListBloc()),
+          Bloc((i) => ColorBloc()),
+        ],
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: Colors.amber[300],
+          body: ValueListenableBuilder(
+              valueListenable: isCollapsed,
+              builder: (context, value, widget) {
+                return Stack(
+                  children: <Widget>[
+                    AppDrawer(),
+                    AnimatedPositioned(
+                      duration: duration,
+                      top: isCollapsed.value
+                          ? 0
+                          : MediaQuery.of(context).size.height * 0.1,
+                      bottom: isCollapsed.value
+                          ? 0
+                          : MediaQuery.of(context).size.height * 0,
+                      left: isCollapsed.value
+                          ? 0
+                          : MediaQuery.of(context).size.width * 0.5,
+                      right: isCollapsed.value
+                          ? 0
+                          : MediaQuery.of(context).size.height * -0.25,
+                      child: Material(
+                          borderRadius: BorderRadius.all(Radius.circular(40)),
+                          animationDuration: Duration(milliseconds: 700),
+                          elevation: 20.0,
+                          child: ShowCaseWidget(
+                            builder: Builder(
+                              builder: (context) => Home(),
+                            ),
+                          )),
+                    ),
+                  ],
+                );
+              }),
+        ),
       ),
     );
   }
