@@ -24,12 +24,16 @@ The App has two login namely,
 * Consumer:- This page is for general consumers who can place their orders here.The Consumer login also has 
              
              * Cart Screen :- This page allows Users to see the cart list and edit them as per the need
-             * Wallet Screen :- This page shows the remaining balance of the user.It also provides the utility to add the money into wallet for easy transaction.
-             * Filter Screen :- This page allows users to set their particular taste of food.This helps in setting spiciness,sweetness,should onions be present.
+             * Wallet Screen :- This page shows the remaining balance of the user.
+                                It also provides the utility to add the money into wallet for easy transaction.
+             * Filter Screen :- This page allows users to set their particular taste of food.
+                                This helps in setting spiciness,sweetness,should onions be present.
              
               
 
 * GitHub repo Link: [VJTI_Canteen](https://github.com/amanchhaparia/G.A.M.A)
+* demo video : [click here](https://drive.google.com/file/d/1p8aZjAUvL_0ewFnd1KmNet50JE9YAQAr/view?usp=sharing)
+* apk Link: [VJTI_Canteen.apk](https://drive.google.com/file/d/1pHiY4YNWt2tDf2GcuJTD_-6hkKXfypNQ/view?usp=sharing)
 * Drive Link:
 
 ## Technology Stack
