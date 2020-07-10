@@ -192,7 +192,8 @@ class _BottomBarState extends State<BottomBar> {
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: Text('Alert'),
+          title:
+              errorMessage == 'Cart is empty.!' ? Text('Alert') : Text('Done'),
           content: Text(errorMessage),
           actions: <Widget>[
             FlatButton(
@@ -201,7 +202,7 @@ class _BottomBarState extends State<BottomBar> {
                 if (errorMessage == 'Cart is empty.!') {
                   Navigator.of(ctx).pop();
                 } else {
-                  Navigator.of(context)
+                  Navigator.of(ctx)
                       .pushReplacementNamed(OrderScreen.routeName);
                 }
               },
