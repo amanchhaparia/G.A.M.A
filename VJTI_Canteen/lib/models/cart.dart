@@ -156,20 +156,24 @@ class _BottomBarState extends State<BottomBar> {
                 ),
                 GestureDetector(
                     onTap: () async {
-                      var uid;
-                      await funct().then((value) => (uid = value));
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      Orders(uid)
-                          .updateUserOrder(widget.foodItems,
-                              returnTotalAmount(widget.foodItems), context)
-                          .whenComplete(() => removeTheCart())
-                          .whenComplete(() {
+                      if (widget.foodItems.length == 0) {
+                        _showAlert(context, 'Cart is empty.!');
+                      } else {
+                        var uid;
+                        await funct().then((value) => (uid = value));
                         setState(() {
-                          _isLoading = false;
+                          _isLoading = true;
                         });
-                      });
+                        Orders(uid)
+                            .updateUserOrder(widget.foodItems,
+                                returnTotalAmount(widget.foodItems), context)
+                            .whenComplete(() => removeTheCart())
+                            .whenComplete(() {
+                          setState(() {
+                            _isLoading = false;
+                          });
+                        });
+                      }
                     },
                     child: Showcase(
                         key: KeysToBeInherited.of(context).nextIndicatorKey,
@@ -178,6 +182,26 @@ class _BottomBarState extends State<BottomBar> {
               ],
             ),
           );
+  }
+
+  void _showAlert(BuildContext context, String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text('Alert'),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Okay'),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -199,7 +223,7 @@ Container nextButtonBar() {
             fontSize: 14,
           ),
         ),
-        Text("Next",
+        Text("Order Now",
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 16,
