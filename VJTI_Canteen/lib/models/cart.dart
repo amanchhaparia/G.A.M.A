@@ -1,3 +1,7 @@
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcase.dart';
+import 'package:showcaseview/showcase_widget.dart';
+
 import '../models/fooditem.dart';
 import '../bloc/cartListBloc.dart';
 import 'package:flutter/material.dart';
@@ -15,24 +19,98 @@ class Cart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<FoodItem> foodItems;
-    return StreamBuilder(
-      stream: bloc.listStream,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          foodItems = snapshot.data;
-          return Scaffold(
-            body: SafeArea(
-              child: Container(
-                child: CartBody(foodItems),
-              ),
-            ),
-            bottomNavigationBar: BottomBar(foodItems),
-          );
-        } else {
-          return Container();
-        }
-      },
+    return ShowCaseWidget(
+        builder: Builder(
+      builder: (context) => StreamBuilder(
+        stream: bloc.listStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            foodItems = snapshot.data;
+            return MainScreen(foodItems: foodItems);
+          } else {
+            return Container();
+          }
+        },
+      ),
+    ));
+  }
+}
+
+class MainScreen extends StatefulWidget {
+  final List<FoodItem> foodItems;
+  MainScreen({this.foodItems});
+
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  GlobalKey _backButton = GlobalKey();
+  GlobalKey _deleteButton = GlobalKey();
+  GlobalKey _nextButton = GlobalKey();
+  @override
+  Widget build(BuildContext context) {
+    SharedPreferences preferences;
+    displayShowcase() async {
+      preferences = await SharedPreferences.getInstance();
+      bool showCaseVisibilityStatus = preferences.getBool("displayShowcase");
+      if (showCaseVisibilityStatus == null) {
+        return true;
+      }
+      return false;
+    }
+
+    displayShowcase().then((status) {
+      if (status) {
+        preferences.setBool("displayShowcase", false);
+        ShowCaseWidget.of(context).startShowCase([
+          _deleteButton,
+          _nextButton,
+          _backButton,
+        ]);
+      }
+    });
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   ShowCaseWidget.of(context).startShowCase([_deleteButton,_nextButton,_backButton]);
+    // });
+
+    return KeysToBeInherited(
+      backButtonIndicatorKey: _backButton,
+      deleteIndicatorKey: _deleteButton,
+      nextIndicatorKey: _nextButton,
+      child: Scaffold(
+        body: SafeArea(
+          child: Container(
+            child: CartBody(widget.foodItems),
+          ),
+        ),
+        bottomNavigationBar: BottomBar(widget.foodItems),
+      ),
     );
+  }
+}
+
+class KeysToBeInherited extends InheritedWidget {
+  final GlobalKey backButtonIndicatorKey;
+  final GlobalKey deleteIndicatorKey;
+  final GlobalKey nextIndicatorKey;
+  KeysToBeInherited({
+    this.backButtonIndicatorKey,
+    this.deleteIndicatorKey,
+    this.nextIndicatorKey,
+    Widget child,
+  }) : super(child: child);
+
+  static KeysToBeInherited of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType();
+  }
+
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) {
+    // ignore: todo
+    // TODO: implement updateShouldNotify
+    return true;
   }
 }
 
@@ -74,7 +152,10 @@ class BottomBar extends StatelessWidget {
                         foodItems, returnTotalAmount(foodItems), context)
                     .whenComplete(() => removeTheCart());
               },
-              child: nextButtonBar()),
+              child: Showcase(
+                  key: KeysToBeInherited.of(context).nextIndicatorKey,
+                  description: "Click here to Place the Order",
+                  child: nextButtonBar())),
         ],
       ),
     );
@@ -216,9 +297,13 @@ class CustomAppBar extends StatelessWidget {
         Padding(
           padding: EdgeInsets.all(5),
           child: GestureDetector(
-              child: Icon(
-                CupertinoIcons.back,
-                size: 30,
+              child: Showcase(
+                key: KeysToBeInherited.of(context).backButtonIndicatorKey,
+                description: "Click here to go back to menu page",
+                child: Icon(
+                  CupertinoIcons.back,
+                  size: 30,
+                ),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -255,9 +340,13 @@ class _DragTargetWidgetState extends State<DragTargetWidget> {
       builder: (context, incoming, rejected) {
         return Padding(
           padding: EdgeInsets.all(5.0),
-          child: Icon(
-            CupertinoIcons.delete,
-            size: 35,
+          child: Showcase(
+            key: KeysToBeInherited.of(context).deleteIndicatorKey,
+            description: 'Drag the food Items here to remove it ',
+            child: Icon(
+              CupertinoIcons.delete,
+              size: 35,
+            ),
           ),
         );
       },

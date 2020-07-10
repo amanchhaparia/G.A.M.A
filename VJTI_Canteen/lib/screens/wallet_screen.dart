@@ -140,6 +140,7 @@ class _BalanceState extends State<Balance> {
 
   @override
   void initState() {
+    // ignore: todo
     // TODO: implement initState
     getbalance();
     super.initState();
@@ -209,7 +210,7 @@ class _TransactionListOfOrdersState extends State<TransactionListOfOrders> {
 
 class OrderListItem extends StatelessWidget {
   final DocumentSnapshot document;
-  int ind;
+  final int ind;
   OrderListItem(this.document, this.ind);
   @override
   Widget build(BuildContext context) {

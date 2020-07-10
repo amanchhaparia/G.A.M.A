@@ -6,11 +6,12 @@ import '../bloc/cartListBloc.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 
 class HomePageMiddlePart extends StatelessWidget {
-  String imgloc;
-  String itemName;
-  double itemPrice;
-  FoodItem foodItem;
-  int availability;
+  final String imgloc;
+  final String itemName;
+  final double itemPrice;
+  final FoodItem foodItem;
+  final int availability;
+
   HomePageMiddlePart(this.imgloc, this.itemName, this.itemPrice, this.foodItem,
       this.availability);
 
@@ -111,9 +112,9 @@ class HomePageMiddlePart extends StatelessWidget {
 }
 
 class IncrementDecrement extends StatefulWidget {
-  String itemName;
-  double itemPrice;
-  FoodItem foodItem;
+  final String itemName;
+  final double itemPrice;
+  final FoodItem foodItem;
 
   IncrementDecrement(this.itemName, this.itemPrice, this.foodItem);
   final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
