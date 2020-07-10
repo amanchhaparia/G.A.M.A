@@ -98,7 +98,7 @@ class UserContainer extends StatelessWidget {
                 document.data['spiciness'],
                 document.data['sweetiness'],
                 document.data['isOnionPresent'],
-                document.data['jain'],
+                document.data['isJain'],
               );
             },
           );
