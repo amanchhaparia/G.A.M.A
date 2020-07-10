@@ -43,7 +43,12 @@ dev_dependencies:
 
   bloc_pattern:
   rxdart:
+  flutter_launcher_icons: ^0.7.5
 
+flutter_icons:
+  image_path: "assets/icon/vjticanteenicon.png"
+  Android: true
+  ios: true
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
