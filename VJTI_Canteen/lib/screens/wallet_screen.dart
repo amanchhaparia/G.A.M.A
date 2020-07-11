@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:showcaseview/showcase_widget.dart';
 import '../providers/order.dart';
 
 const Color color1 = Colors.blue;
@@ -32,6 +33,7 @@ class _WalletScreenState extends State<WalletScreen> {
     });
   }
 
+  GlobalKey _addButton = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return SafeArea(

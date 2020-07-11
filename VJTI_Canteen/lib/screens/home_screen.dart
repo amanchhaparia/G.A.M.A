@@ -29,6 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
         if (!currentFocus.hasPrimaryFocus) {
           currentFocus.unfocus();
+        if(isCollapsed.value==false){
+            isCollapsed.value=true;
+        }
         }
       },
       child: BlocProvider(

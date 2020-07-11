@@ -56,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
       cartPreferences = await SharedPreferences.getInstance();
 
       bool showCaseVisibilityStatus =
-          cartPreferences.getBool("displayShowcase");
+          cartPreferences.getBool("displaycartShowcase");
       if (showCaseVisibilityStatus == null) {
         return true;
       }
@@ -65,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
 
     displayShowcase().then((status) {
       if (status) {
-        cartPreferences.setBool("displayShowcase", false);
+        cartPreferences.setBool("displaycartShowcase", false);
         ShowCaseWidget.of(context).startShowCase([
           _deleteButton,
           _nextButton,
@@ -158,32 +158,36 @@ class _BottomBarState extends State<BottomBar> {
                   height: 20,
                 ),
                 GestureDetector(
-                    onTap: () async {
-                      if (widget.foodItems.length == 0) {
-                        _showAlert(context, 'Cart is empty.!');
-                      } else {
-                        var uid;
-                        await funct().then((value) => (uid = value));
+                  onTap: () async {
+                    if (widget.foodItems.length == 0) {
+                      _showAlert(context, 'Cart is empty.!');
+                    } else {
+                      var uid;
+                      await funct().then((value) => (uid = value));
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      Orders(uid)
+                          .updateUserOrder(widget.foodItems,
+                              returnTotalAmount(widget.foodItems), context)
+                          .then((_) => removeTheCart())
+                          .then((_) {
                         setState(() {
-                          _isLoading = true;
+                          _isLoading = false;
                         });
-                        Orders(uid)
-                            .updateUserOrder(widget.foodItems,
-                                returnTotalAmount(widget.foodItems), context)
-                            .then((_) => removeTheCart())
-                            .then((_) {
-                          setState(() {
-                            _isLoading = false;
-                          });
-                        }).whenComplete(() {
-                          _showAlert(context, 'Order placed successfully.!');
-                        });
-                      }
-                    },
-                    child: Showcase(
-                        key: KeysToBeInherited.of(context).nextIndicatorKey,
-                        description: "Click here to Place the Order",
-                        child: nextButtonBar())),
+                      }).whenComplete(() {
+                        _showAlert(context, 'Order placed successfully.!');
+                      });
+                    }
+                  },
+                  child: Showcase(
+                    key: KeysToBeInherited.of(context).nextIndicatorKey,
+                    description: "Click here to Place the Order",
+                    showcaseBackgroundColor: Colors.redAccent,
+                     descTextStyle: TextStyle(fontSize: 25),
+                    child: nextButtonBar(),
+                  ),
+                ),
               ],
             ),
           );
@@ -353,6 +357,8 @@ class CustomAppBar extends StatelessWidget {
               child: Showcase(
                 key: KeysToBeInherited.of(context).backButtonIndicatorKey,
                 description: "Click here to go back to menu page",
+                showcaseBackgroundColor: Colors.redAccent,
+               descTextStyle: TextStyle(fontSize: 25),
                 child: Icon(
                   CupertinoIcons.back,
                   size: 30,
@@ -395,7 +401,9 @@ class _DragTargetWidgetState extends State<DragTargetWidget> {
           padding: EdgeInsets.all(5.0),
           child: Showcase(
             key: KeysToBeInherited.of(context).deleteIndicatorKey,
+            showcaseBackgroundColor: Colors.redAccent,
             description: 'Drag the food Items here to remove it ',
+            descTextStyle: TextStyle(fontSize: 25),
             child: Icon(
               CupertinoIcons.delete,
               size: 35,
