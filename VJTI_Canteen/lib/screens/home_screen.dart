@@ -1,25 +1,24 @@
+import 'package:VJTI_Canteen/providers/cart_item_list.dart';
+import 'package:VJTI_Canteen/providers/food_item_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:VJTI_Canteen/widgets/app_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/fooditem.dart';
-import '../models/Homepage_middle_part.dart';
+import 'Homepage_middle_part.dart';
 import 'package:showcaseview/showcaseview.dart';
-import '../bloc/cartListBloc.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
-import '../models/cart.dart';
+import 'cart_screen.dart';
 import '../bloc/listTileColorBloc.dart';
+import 'package:provider/provider.dart';
 
 var isCollapsed = ValueNotifier<bool>(true);
 List<FoodItem> foodItems = [];
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreen extends StatelessWidget {
   final Duration duration = const Duration(milliseconds: 700);
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +28,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
         if (!currentFocus.hasPrimaryFocus) {
           currentFocus.unfocus();
-        if(isCollapsed.value==false){
-            isCollapsed.value=true;
         }
+        if (isCollapsed.value == false) {
+          isCollapsed.value = true;
         }
       },
       child: BlocProvider(
         blocs: [
-          Bloc((i) => CartListBloc()),
           Bloc((i) => ColorBloc()),
         ],
         child: Scaffold(
@@ -122,6 +120,7 @@ class _HomeState extends State<Home> {
           dummySearchList.add(foodItems[i]);
         }
       }
+
       setState(() {
         duplicateFoodItems.clear();
         duplicateFoodItems.addAll(dummySearchList);
@@ -140,6 +139,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final fooditemsList = Provider.of<FoodItemList>(context);
     SharedPreferences preferences;
     displayShowcase() async {
       preferences = await SharedPreferences.getInstance();
@@ -152,12 +152,14 @@ class _HomeState extends State<Home> {
 
     displayShowcase().then((status) {
       if (status) {
-        preferences.setBool("displayShowcase", false);
-        ShowCaseWidget.of(context).startShowCase([
-          _dashboardKey,
-          _cartKey,
-          _searchBarKey,
-        ]);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          preferences.setBool("displayShowcase", false);
+          ShowCaseWidget.of(context).startShowCase([
+            _dashboardKey,
+            _cartKey,
+            _searchBarKey,
+          ]);
+        });
       }
     });
     // WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -205,9 +207,10 @@ class _HomeState extends State<Home> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.active) {
                     print('yes');
-                    foodItems = List<FoodItem>.generate(
-                      snapshot.data.documents.length,
-                      (index) => FoodItem(
+                    for (int index = 0;
+                        index < snapshot.data.documents.length;
+                        index++) {
+                      fooditemsList.addToList(FoodItem(
                         id: snapshot.data.documents[index]['id'],
                         title: snapshot.data.documents[index]['name'],
                         imgloc: snapshot.data.documents[index]['imageUrl'],
@@ -215,9 +218,9 @@ class _HomeState extends State<Home> {
                             .toDouble(),
                         availability: snapshot.data.documents[index]
                             ['availability'],
-                      ),
-                    );
-
+                      ));
+                    }
+                    foodItems = fooditemsList.foodItems;
                     return ListView.builder(
                       shrinkWrap: true,
                       physics: ScrollPhysics(),
@@ -398,16 +401,13 @@ class FirstHalf extends StatelessWidget {
   }
 }
 
-class CustomAppBar extends StatefulWidget {
-  @override
-  _CustomAppBarState createState() => _CustomAppBarState();
-}
-
-class _CustomAppBarState extends State<CustomAppBar> {
-  final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
+class CustomAppBar extends StatelessWidget {
+  final bool collapsed = isCollapsed.value;
 
   @override
   Widget build(BuildContext context) {
+    int sum = Provider.of<CartItemList>(context, listen: true).totalItem;
+    print(sum.toString());
     return Container(
       margin: EdgeInsets.only(bottom: 15),
       child: Row(
@@ -418,87 +418,61 @@ class _CustomAppBarState extends State<CustomAppBar> {
               showcaseBackgroundColor: Colors.redAccent,
               key: KeysToBeInherited.of(context).dashboardIndicatorKey,
               description: "Click here to open the options drawer",
-              child: Icon(Icons.menu),
+              child: collapsed
+                  ? Icon(Icons.menu)
+                  : Text(
+                      'X',
+                      style: TextStyle(fontSize: 25, color: Colors.black),
+                    ),
             ),
             onTap: () {
-              setState(() {
-                isCollapsed.value = !isCollapsed.value;
-              });
+              isCollapsed.value = !isCollapsed.value;
             },
           ),
-          StreamBuilder(
-            initialData: null,
-            stream: bloc.listStream,
-            builder: (context, snapshot) {
-              List<FoodItem> foodItems = [];
-              if (snapshot.hasData) {
-                foodItems = snapshot.data;
-              }
-
-              int sum = 0;
-
-              for (int i = 0; i < foodItems.length; i++) {
-                sum = sum + foodItems[i].quantity;
-              }
-              return buildGestureDetector(
-                sum,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
                 context,
-                foodItems,
+                MaterialPageRoute(
+                  builder: (context) => Cart(),
+                ),
               );
             },
-          )
-        ],
-      ),
-    );
-  }
-
-  GestureDetector buildGestureDetector(
-      int sum, BuildContext context, List<FoodItem> foodItems) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Cart(),
-          ),
-        );
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.2,
-        height: MediaQuery.of(context).size.height * 0.1,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              right: MediaQuery.of(context).size.width * 0.02,
-              top: MediaQuery.of(context).size.height * 0.01,
-              child: CircleAvatar(
-                backgroundColor: Colors.yellow[800],
-                child: sum == 0
-                    ? Text(
-                        '0',
-                        style: TextStyle(color: Colors.black),
-                      )
-                    : Text(
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.2,
+              height: MediaQuery.of(context).size.height * 0.1,
+              child: Stack(
+                children: <Widget>[
+                  Positioned(
+                    right: MediaQuery.of(context).size.width * 0.02,
+                    top: MediaQuery.of(context).size.height * 0.01,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.yellow[800],
+                      child: Text(
                         sum.toString(),
                         style: TextStyle(color: Colors.black),
                       ),
+                    ),
+                  ),
+                  Positioned(
+                    right: MediaQuery.of(context).size.width * 0.06,
+                    top: MediaQuery.of(context).size.width * 0.08,
+                    child: Showcase(
+                      key: KeysToBeInherited.of(context).cartIndicatorKey,
+                      description:
+                          "Click here to review the items in your cart",
+                      showcaseBackgroundColor: Colors.redAccent,
+                      child: Icon(
+                        Icons.shopping_cart,
+                        size: 30,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            Positioned(
-              right: MediaQuery.of(context).size.width * 0.06,
-              top: MediaQuery.of(context).size.width * 0.08,
-              child: Showcase(
-                key: KeysToBeInherited.of(context).cartIndicatorKey,
-                description: "Click here to review the items in your cart",
-                showcaseBackgroundColor: Colors.redAccent,
-                child: Icon(
-                  Icons.shopping_cart,
-                  size: 30,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

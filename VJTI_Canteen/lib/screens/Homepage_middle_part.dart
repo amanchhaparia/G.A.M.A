@@ -1,9 +1,8 @@
-import 'package:VJTI_Canteen/bloc/cartListBloc.dart';
+import 'package:VJTI_Canteen/providers/cart_item_list.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../models/fooditem.dart';
-import '../bloc/cartListBloc.dart';
-import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:provider/provider.dart';
 
 class HomePageMiddlePart extends StatelessWidget {
   final String imgloc;
@@ -14,16 +13,6 @@ class HomePageMiddlePart extends StatelessWidget {
 
   HomePageMiddlePart(this.imgloc, this.itemName, this.itemPrice, this.foodItem,
       this.availability);
-
-  final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
-
-  addToCart(FoodItem foodItem) {
-    bloc.addToList(foodItem);
-  }
-
-  removeFromCart(FoodItem foodItem) {
-    bloc.removeFromList(foodItem);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,19 +106,14 @@ class IncrementDecrement extends StatefulWidget {
   final FoodItem foodItem;
 
   IncrementDecrement(this.itemName, this.itemPrice, this.foodItem);
-  final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
+
   @override
   _IncrementDecrementState createState() => _IncrementDecrementState();
 }
 
 class _IncrementDecrementState extends State<IncrementDecrement> {
-  final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
   @override
   Widget build(BuildContext context) {
-    addToCart(FoodItem foodItem) {
-      bloc.addToList(foodItem);
-    }
-
     return Positioned(
       right: MediaQuery.of(context).size.width * 0.1,
       top: MediaQuery.of(context).size.height * 0.14,
@@ -140,13 +124,19 @@ class _IncrementDecrementState extends State<IncrementDecrement> {
           ),
           height: 45,
           width: 120,
-          child: FlatButton(
+          child: 
+              // Provider.of<CartItemList>(context, listen: false)
+              //             .quantityOfItem(widget.foodItem) <
+              //         1
+              //     ?
+              FlatButton(
             color: Colors.amber,
             child: Text('Add'),
             onPressed: () {
+              Provider.of<CartItemList>(context, listen: false)
+                  .addToCart(widget.foodItem);
               setState(() {
                 // if (widget.foodItem.availability > widget.foodItem.quantity) {
-                addToCart(widget.foodItem);
                 final snackBar = SnackBar(
                   content: Text(
                     '${widget.itemName} is added to the cart',
@@ -169,7 +159,68 @@ class _IncrementDecrementState extends State<IncrementDecrement> {
                 // }
               });
             },
-          )),
+          )
+          // : IncrementDecrementBar(
+          //     foodItem: widget.foodItem,
+          //   ),
+          ),
+    );
+  }
+}
+
+class IncrementDecrementBar extends StatelessWidget {
+  final FoodItem foodItem;
+  IncrementDecrementBar({this.foodItem});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[300], width: 2),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      height: 45,
+      width: 120,
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: FlatButton(
+              color: Colors.amber,
+              child: Icon(
+                Icons.remove,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Provider.of<CartItemList>(context, listen: false)
+                    .removeFromCart(foodItem.id);
+              },
+            ),
+          ),
+          Container(
+            width: 40,
+            child: FittedBox(
+              child: Text(
+                Provider.of<CartItemList>(context, listen: true)
+                    .quantityOfItem(foodItem)
+                    .toString(),
+                style: TextStyle(),
+              ),
+            ),
+          ),
+          Expanded(
+            child: FlatButton(
+              color: Colors.amber,
+              child: Icon(
+                Icons.add,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Provider.of<CartItemList>(context, listen: false)
+                    .addToCart(foodItem);
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import '../screens/orders_screen.dart';
-
 import '../models/fooditem.dart';
+import '../models/cartItem.dart';
 
 class OrderItem {
   final int total;
   final List<FoodItem> cartItems;
   final DateTime dateTime;
   final String id;
-
+  
   OrderItem(
       {@required this.id,
       @required this.cartItems,
@@ -31,7 +29,7 @@ class Orders with ChangeNotifier {
   }
 
   Future updateUserOrder(
-      List<FoodItem> cartItems, double total, BuildContext context) async {
+      List<CartItem> cartItems, double total, BuildContext context) async {
     var balance;
     await orderCollection
         .document(uid)

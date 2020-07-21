@@ -1,10 +1,10 @@
+import 'package:VJTI_Canteen/providers/cart_item_list.dart';
+
 import 'package:VJTI_Canteen/screens/orders_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcase.dart';
 import 'package:showcaseview/showcase_widget.dart';
 
-import '../models/fooditem.dart';
-import '../bloc/cartListBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -12,35 +12,32 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import '../bloc/listTileColorBloc.dart';
 import '../providers/auth.dart';
 import '../providers/order.dart';
+import '../models/cartItem.dart';
 
 class Cart extends StatelessWidget {
-  final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
   final ColorBloc colorBloc = BlocProvider.getBloc<ColorBloc>();
 
   @override
   Widget build(BuildContext context) {
-    List<FoodItem> foodItems;
     return ShowCaseWidget(
         builder: Builder(
-      builder: (context) => StreamBuilder(
-        stream: bloc.listStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            foodItems = snapshot.data;
-            return MainScreen(foodItems: foodItems);
-          } else {
-            return Container();
-          }
-        },
-      ),
+      builder: (context) => MainScreen(),
+      // StreamBuilder(
+      //   stream: Provider.of<FoodItemList>(context),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.hasData) {
+      //       foodItems = snapshot.data;
+      //       return MainScreen(foodItems: foodItems);
+      //     } else {
+      //       return Container();
+      //     }
+      //   },
+      // ),
     ));
   }
 }
 
 class MainScreen extends StatefulWidget {
-  final List<FoodItem> foodItems;
-  MainScreen({this.foodItems});
-
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -51,6 +48,7 @@ class _MainScreenState extends State<MainScreen> {
   GlobalKey _nextButton = GlobalKey();
   @override
   Widget build(BuildContext context) {
+    final cartListItem = Provider.of<CartItemList>(context);
     SharedPreferences cartPreferences;
     displayShowcase() async {
       cartPreferences = await SharedPreferences.getInstance();
@@ -86,10 +84,12 @@ class _MainScreenState extends State<MainScreen> {
       child: Scaffold(
         body: SafeArea(
           child: Container(
-            child: CartBody(widget.foodItems),
+            child: CartBody(
+              cartItemList: cartListItem.cartFoodItem,
+            ),
           ),
         ),
-        bottomNavigationBar: BottomBar(widget.foodItems),
+        bottomNavigationBar: BottomBar(cartListItem.cartFoodItem),
       ),
     );
   }
@@ -119,20 +119,15 @@ class KeysToBeInherited extends InheritedWidget {
 }
 
 class BottomBar extends StatefulWidget {
-  final List<FoodItem> foodItems;
-  BottomBar(this.foodItems);
+  final List<CartItem> cartItem;
+  BottomBar(this.cartItem);
 
   @override
   _BottomBarState createState() => _BottomBarState();
 }
 
 class _BottomBarState extends State<BottomBar> {
-  final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
   var _isLoading = false;
-
-  removeTheCart() {
-    bloc.emptyTheCart();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +144,7 @@ class _BottomBarState extends State<BottomBar> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                totalAmount(widget.foodItems),
+                totalAmount(widget.cartItem),
                 Divider(
                   height: 0.8,
                   color: Colors.grey[700],
@@ -159,7 +154,7 @@ class _BottomBarState extends State<BottomBar> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    if (widget.foodItems.length == 0) {
+                    if (widget.cartItem.length == 0) {
                       _showAlert(context, 'Cart is empty.!');
                     } else {
                       var uid;
@@ -168,9 +163,11 @@ class _BottomBarState extends State<BottomBar> {
                         _isLoading = true;
                       });
                       Orders(uid)
-                          .updateUserOrder(widget.foodItems,
-                              returnTotalAmount(widget.foodItems), context)
-                          .then((_) => removeTheCart())
+                          .updateUserOrder(widget.cartItem,
+                              returnTotalAmount(widget.cartItem), context)
+                          .then((_) =>
+                              Provider.of<CartItemList>(context, listen: false)
+                                  .clearCart())
                           .then((_) {
                         setState(() {
                           _isLoading = false;
@@ -184,7 +181,7 @@ class _BottomBarState extends State<BottomBar> {
                     key: KeysToBeInherited.of(context).nextIndicatorKey,
                     description: "Click here to Place the Order",
                     showcaseBackgroundColor: Colors.redAccent,
-                     descTextStyle: TextStyle(fontSize: 25),
+                    descTextStyle: TextStyle(fontSize: 25),
                     child: nextButtonBar(),
                   ),
                 ),
@@ -247,7 +244,7 @@ Container nextButtonBar() {
   );
 }
 
-Container totalAmount(List<FoodItem> foodItems) {
+Container totalAmount(List<CartItem> cartItem) {
   return Container(
     margin: EdgeInsets.only(right: 10),
     padding: EdgeInsets.all(25),
@@ -259,7 +256,7 @@ Container totalAmount(List<FoodItem> foodItems) {
           style: TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
         ),
         Text(
-          '₹${returnTotalAmount(foodItems).toStringAsFixed(2)}',
+          '₹${returnTotalAmount(cartItem).toStringAsFixed(2)}',
           style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
         ),
       ],
@@ -267,17 +264,18 @@ Container totalAmount(List<FoodItem> foodItems) {
   );
 }
 
-double returnTotalAmount(List<FoodItem> foodItems) {
+double returnTotalAmount(List<CartItem> cartItem) {
   double totalAmount = 0;
-  for (int i = 0; i < foodItems.length; i++) {
-    totalAmount = totalAmount + foodItems[i].price * foodItems[i].quantity;
+  for (int i = 0; i < cartItem.length; i++) {
+    totalAmount = totalAmount + cartItem[i].price * cartItem[i].quantity;
   }
   return totalAmount;
 }
 
 class CartBody extends StatelessWidget {
-  final List<FoodItem> foodItems;
-  CartBody(this.foodItems);
+  final List<CartItem> cartItemList;
+  CartBody({@required this.cartItemList});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -288,7 +286,13 @@ class CartBody extends StatelessWidget {
           title(),
           Expanded(
             flex: 1,
-            child: foodItems.length > 0 ? foodItemList() : noItemContainer(),
+            child: cartItemList.length > 0
+                ? ListView.builder(
+                    itemCount: cartItemList != null ? cartItemList.length : 0,
+                    itemBuilder: (builder, index) {
+                      return CartListItem(cartItemList[index]);
+                    })
+                : noItemContainer(),
           )
         ],
       ),
@@ -306,14 +310,6 @@ class CartBody extends StatelessWidget {
             )),
       ),
     );
-  }
-
-  ListView foodItemList() {
-    return ListView.builder(
-        itemCount: foodItems.length,
-        itemBuilder: (builder, index) {
-          return CartListItem(foodItems[index]);
-        });
   }
 
   Widget title() {
@@ -345,7 +341,6 @@ class CartBody extends StatelessWidget {
 }
 
 class CustomAppBar extends StatelessWidget {
-  final CartListBloc bloc = BlocProvider.getBloc<CartListBloc>();
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -358,7 +353,7 @@ class CustomAppBar extends StatelessWidget {
                 key: KeysToBeInherited.of(context).backButtonIndicatorKey,
                 description: "Click here to go back to menu page",
                 showcaseBackgroundColor: Colors.redAccent,
-               descTextStyle: TextStyle(fontSize: 25),
+                descTextStyle: TextStyle(fontSize: 25),
                 child: Icon(
                   CupertinoIcons.back,
                   size: 30,
@@ -380,17 +375,17 @@ class DragTargetWidget extends StatefulWidget {
 }
 
 class _DragTargetWidgetState extends State<DragTargetWidget> {
-  final CartListBloc listBloc = BlocProvider.getBloc<CartListBloc>();
   final ColorBloc colorBloc = BlocProvider.getBloc<ColorBloc>();
   @override
   Widget build(BuildContext context) {
-    return DragTarget<FoodItem>(
-      onWillAccept: (FoodItem foodItem) {
+    return DragTarget<CartItem>(
+      onWillAccept: (CartItem cartItem) {
         colorBloc.setColor(Colors.red);
         return true;
       },
-      onAccept: (FoodItem foodItem) {
-        listBloc.removeFromList(foodItem);
+      onAccept: (CartItem cartItem) {
+        Provider.of<CartItemList>(context, listen: false)
+            .removeFromCart(cartItem.id);
         colorBloc.setColor(Colors.white);
       },
       onLeave: (_) {
@@ -416,18 +411,18 @@ class _DragTargetWidgetState extends State<DragTargetWidget> {
 }
 
 class CartListItem extends StatelessWidget {
-  final FoodItem foodItem;
-  CartListItem(this.foodItem);
+  final CartItem cartItem;
+  CartListItem(this.cartItem);
   @override
   Widget build(BuildContext context) {
     return Draggable(
-        data: foodItem,
+        data: cartItem,
         maxSimultaneousDrags: 1,
-        child: DraggableChild(foodItem: foodItem),
-        feedback: DraggableChildFeedback(foodItem: foodItem),
-        childWhenDragging: foodItem.quantity > 1
+        child: DraggableChild(cartItem: cartItem),
+        feedback: DraggableChildFeedback(cartItem: cartItem),
+        childWhenDragging: cartItem.quantity > 1
             ? DraggableChild(
-                foodItem: foodItem,
+                cartItem: cartItem,
               )
             : Container());
   }
@@ -436,17 +431,17 @@ class CartListItem extends StatelessWidget {
 class DraggableChild extends StatelessWidget {
   const DraggableChild({
     Key key,
-    @required this.foodItem,
+    @required this.cartItem,
   }) : super(key: key);
 
-  final FoodItem foodItem;
+  final CartItem cartItem;
 
   @override
   Widget build(BuildContext context) {
     return Material(
       child: Container(
         margin: EdgeInsets.only(bottom: 25),
-        child: ItemContent(foodItem),
+        child: ItemContent(cartItem),
       ),
     );
   }
@@ -455,10 +450,10 @@ class DraggableChild extends StatelessWidget {
 class DraggableChildFeedback extends StatelessWidget {
   const DraggableChildFeedback({
     Key key,
-    @required this.foodItem,
+    @required this.cartItem,
   }) : super(key: key);
 
-  final FoodItem foodItem;
+  final CartItem cartItem;
 
   @override
   Widget build(BuildContext context) {
@@ -475,7 +470,7 @@ class DraggableChildFeedback extends StatelessWidget {
                   color: snapshot.hasData ? snapshot.data : Colors.white,
                 ),
                 margin: EdgeInsets.only(bottom: 25),
-                child: ItemContent(foodItem),
+                child: ItemContent(cartItem),
               ),
             );
           }),
@@ -484,8 +479,8 @@ class DraggableChildFeedback extends StatelessWidget {
 }
 
 class ItemContent extends StatelessWidget {
-  final FoodItem foodItem;
-  ItemContent(this.foodItem);
+  final CartItem cartItem;
+  ItemContent(this.cartItem);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -496,7 +491,7 @@ class ItemContent extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(5),
             child: Image.asset(
-              foodItem.imgloc,
+              cartItem.imgloc,
               fit: BoxFit.fitHeight,
               height: 55,
               width: 80,
@@ -511,13 +506,13 @@ class ItemContent extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  text: foodItem.quantity.toString(),
+                  text: cartItem.quantity.toString(),
                 ),
                 TextSpan(
                   text: 'x',
                 ),
                 TextSpan(
-                  text: foodItem.title,
+                  text: cartItem.title.toString(),
                 ),
               ],
             ),
@@ -525,7 +520,7 @@ class ItemContent extends StatelessWidget {
           Column(
             children: <Widget>[
               Text(
-                '₹${foodItem.quantity * foodItem.price}',
+                '₹${cartItem.quantity * cartItem.price}',
                 style: TextStyle(
                   color: Colors.grey[700],
                   fontWeight: FontWeight.w400,
